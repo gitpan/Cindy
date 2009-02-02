@@ -1,0 +1,7 @@
+Revision history for Perl extension Cindy.
+
+0.01  Wed Dec  3 08:54:14 2008
+	- original version; created by h2xs 1.23 with options
+		-AX --skip-exporter --use-new-tests -n Cindy
+  - First version for CPAN. 
+    Alpha, needs discussion of use cases. 

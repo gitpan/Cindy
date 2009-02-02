@@ -1,0 +1,33 @@
+
+# Cindy::Apache2 must be in the path
+<Perl>
+use lib '../lib';
+</Perl>
+
+PerlModule Apache2::Reload
+PerlInitHandler Apache2::Reload
+
+<Files "test.html">
+# You can not use cindy.html in place of test.html
+# since this would cause an infinite recursion
+
+SetEnv  CINDY_DOC_URI   /cindy/test/cindy.html
+SetEnv  CINDY_DATA_URI  /cindy/test/cindy.xml
+SetEnv  CINDY_CIS_URI   /cindy/test/cindy.cjs
+
+PerlModule Cindy::Apache2
+SetHandler  perl-script
+PerlHandler Cindy::Apache2
+</Files>
+
+<Files "spread-oo.html">
+SetEnv  CINDY_DOC_URI   /cindy/test/spread.html
+# content.xml is unzipped from spread.ods
+SetEnv  CINDY_DATA_URI  /cindy/test/content.xml
+SetEnv  CINDY_CIS_URI   /cindy/test/spread.cjs
+
+PerlModule Cindy::Apache2
+SetHandler  perl-script
+PerlHandler Cindy::Apache2
+</Files>
+

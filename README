@@ -1,0 +1,46 @@
+Cindy version 0.01
+==================
+
+This module provides an XML based template engine that moves data
+from an XML/HTML data source into an XML/HTML template. How this
+is done is described by a Content INjection sheet. A content 
+injection sheet loosely resembles a CSS style sheet.
+
+To use this module with apache 2 writing perl is not required.
+The module can configured from .htaccess files.
+
+The current status is alpha. Use cases to improve the interface
+are needed.
+
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+DEPENDENCIES
+
+This module requires these other modules and libraries:
+
+  XML::LibXML
+
+For use with mod_perl2
+  
+  Apache2::Request, Apache2::Response, Apache2::SubRequest, 
+  Apache2::Filter, Apache2::Log, Apache2::Const, APR::Const, 
+  Apache2::RequestRec, APR::Finfo
+
+COPYRIGHT AND LICENCE
+
+Put the correct copyright and licence information here.
+
+Copyright (C) 2008 by Joachim Zobel <jz-2008@heute-morgen.de>
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself, either Perl version 5.10.0 or,
+at your option, any later version of Perl 5 you may have available.
+
+
