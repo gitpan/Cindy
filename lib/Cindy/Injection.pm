@@ -140,7 +140,7 @@ sub matchAt($$$)
       INFO "$cnt data nodes where 1 was expected for action $self->{action}.";
     }
     if ($self->{action} eq 'none') {
-      WARN "Trying to run an empty sheet.";
+      DEBUG "Empty sheet encountered.";
       return ();
     } else {
       return map {makeAction($self->{action},

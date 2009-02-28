@@ -1,13 +1,14 @@
 --- #YAML:1.0
 name:                Cindy
-version:             0.01
+version:             0.02
 abstract:            use unmodified XML or HTML documents as templates.
 license:             ~
 author:              
-    - jo <jo@>
+    - JZOBEL (jz-2009@heute-morgen.de)
 generated_by:        ExtUtils::MakeMaker version 6.42
 distribution_type:   module
 requires:     
+    XML::LibXML:                   0
 meta-spec:
     url:     http://module-build.sourceforge.net/META-spec-v1.3.html
     version: 1.3

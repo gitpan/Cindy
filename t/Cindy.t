@@ -14,9 +14,11 @@ use Cindy;
 
 my $cis = q|
 
+; Testing comments
 /data/title/@test content   /html/head/title ;
 /data/content     content   /html/body/h2[1] ;
-/data/replace     replace   /html/body/p[1]/b[1] ;
+; Testing enclosing "
+"/data/replace"   replace   /html/body/p[1]/b[1] ;
 /data/omit        omit-tag  /html/body/p[1]/b[2] ;
 /data/size        attribute /html/body/p[1]/font size ;
 /data/color       attribute /html/body/p[1]/font color ;

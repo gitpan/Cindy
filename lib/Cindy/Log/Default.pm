@@ -16,14 +16,16 @@ use base qw(Exporter);
 
 our @EXPORT= qw(DEBUG INFO WARN ERROR FATAL); 
 
+use Carp;
+
 sub ERROR ($)
 {
-  die @_;
+  croak @_;
 }
 
 sub WARN ($)
 {
-  warn @_;
+  carp @_;
 }
 
 sub INFO($) {}

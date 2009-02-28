@@ -18,8 +18,10 @@ use Data::Dumper;
 
 my $parser = Parse::RecDescent->new(q%
 
-xpath:   /\\S+/
-atname:  /\\w[\\w\\d.:-]*/
+xpath:  /\\"[^\\"]+\\"/ 
+        {$return = substr($item[1], 1, -1);}
+xpath:  /\\S+/
+atname: /\\w[\\w\\d.:-]*/
 
 action: /content|replace|omit-tag|condition/
 attribute: /attribute/

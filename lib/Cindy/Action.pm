@@ -79,7 +79,8 @@ sub condition($$)
 #
 # The node gets a copy of the data children to replace
 # the existing ones. This copies the text held by data
-# as well as possible element nodes (e.g. <b>) 
+# as well as possible element nodes (e.g. <b>). If data
+# is not a node its treated as text.
 #
 sub content($$) 
 {
@@ -90,10 +91,16 @@ sub content($$)
   # the target node will be left unchanged. 
   if (defined($data)) {
     $node->removeChildNodes();	
-  }
-  foreach my $child (copy_children($data, $node)) {
-    $node->appendChild($child);
-  }
+    if ($data->can('childNodes')) {
+      foreach my $child (copy_children($data, $node)) {
+        $node->appendChild($child);
+      }
+    } else {
+      # No child nodes, so its hopefully text
+      $node->appendChild(
+        $node->ownerDocument->createTextNode($data));
+    }
+  }  
 
   return 0;
 }

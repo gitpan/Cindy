@@ -5,3 +5,9 @@ Revision history for Perl extension Cindy.
 		-AX --skip-exporter --use-new-tests -n Cindy
   - First version for CPAN. 
     Alpha, needs discussion of use cases. 
+
+0.02  Sat Feb 28 14:52:23 2009
+  - content treats source as text if it is not a node set
+  - XPath expressions can be enclosed with quotes
+  - Added dependency on XML::LibXML
+ 

@@ -13,7 +13,7 @@ use warnings;
 
 use base qw(Exporter);
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 our @EXPORT= qw(get_html_doc get_xml_doc 
                 parse_html_string parse_xml_string 
@@ -164,7 +164,8 @@ So the above is not equvalent to the replace action.
 
 All child nodes of the target node are replaced by child nodes of the 
 source node. This means that the text of the source tag with all tags 
-it contains replaces the content of the target tag. 
+it contains replaces the content of the target tag. If data is not
+a node, it is treated as text.
 
 =head3 replace
 
