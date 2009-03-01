@@ -10,4 +10,7 @@ Revision history for Perl extension Cindy.
   - content treats source as text if it is not a node set
   - XPath expressions can be enclosed with quotes
   - Added dependency on XML::LibXML
- 
+
+0.03  Sun Mar  1 16:29:27 2009
+  - Added dependency on Parse::RecDescend
+  - Perl 5.6 should do
