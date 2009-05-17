@@ -1,4 +1,4 @@
-# $Id: Apache2.pm,v 1.3 2008-11-25 18:29:22 jo Exp $
+# $Id: Apache2.pm 3 2009-03-03 19:13:39Z jo $
 # Cindy::Apache2 - mod_perl2 interface for the Cindy module.
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.

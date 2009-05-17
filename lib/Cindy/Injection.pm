@@ -1,4 +1,4 @@
-# $Id: Injection.pm,v 1.1.1.1 2008-11-20 22:08:36 jo Exp $
+# $Id: Injection.pm 7 2009-05-14 18:20:04Z jo $
 # Cindy::Injection - Injections are the elements of content injection 
 # sheets.
 #
@@ -38,24 +38,43 @@ sub new($$$$;$)
   return bless($self, $class); 
 }
 
+#
+# Make a copy
+#
+sub clone($)
+{
+  my ($self) = @_;
+
+  my %rtn = %{$self};
+
+  return bless(\%rtn, ref($self));
+}
+
 
 #
-# Helper wrapper
+# Wrapper for find.
 #
 sub find_matches($$) {
   my ($data, $xpath) = @_;
 
   my @data_nodes = ();
 
+  DEBUG "Matching '$xpath'.";
+
+  # No xpath, no results
+  return @data_nodes unless ($xpath);
+
   my $found = eval {$data->find( $xpath );};
   if ($@) {
     ERROR "Error searching $xpath:$@";
   } else {
-    DEBUG "Matched '$xpath', found $found.";
-
     if ($found->isa('XML::LibXML::NodeList')) {
       @data_nodes = $found->get_nodelist();
+      DEBUG "Found "
+              # toString is not called automagically
+              .join('|', map {$_->toString();} @data_nodes).'.';
     } else {
+      DEBUG "Matched '$xpath', found $found.";
       @data_nodes = ($found);
     }
   }
@@ -73,85 +92,161 @@ sub debugNode($)
 }
 
 #
-# This function does the xpath matching. It recurses into
-# subsheets. While doing this it creates closures for later 
-# execution. This is necessary since no changes to the 
-# document tree can take place before all the matches are 
-# done.
-# returns an array of closures to be executed later.
-# 
-sub matchAt($$$)
+# Matches all doc nodes
+#
+sub matchDoc($$)
 {
-  my ($self, $data, $doc) = @_;
-
-  my @data_nodes = find_matches($data, $self->{xdata}); 
-  my @doc_nodes  = find_matches($doc, $self->{xdoc});
-  if (!@doc_nodes) {
-    INFO "No docnodes found for $self->{xdoc}.";
-  }
-  
-  if (defined($self->{subsheet})) {
-    # assert $action eq 'repeat'
-    
-    my @rtn = ();
-    # Recursively match the subsheets 
-    foreach my $locdoc (@doc_nodes) {
-      # Keeping the parent in a variable won't
-      # work since the parent changes.
-      # my $parent = $locdoc->parentNode;
-      foreach my $locdata (@data_nodes) {
-        # Data for each data node is injected into a
-        # seperate copy.
-        my $newdoc = $locdoc->cloneNode(1);
-
-        # Data is injected into the copy
-        foreach my $subdesc (@{($self->{subsheet})}) {
-          DEBUG "Calling match for doc. "
-                    .$newdoc->nodeName." (".$newdoc->nodeType.").\n";
-          push(@rtn,
-               $subdesc->matchAt($locdata, $newdoc));
-        }
-
-        # The copy is inserted before the original
-        push(@rtn, sub {     
-          my $parent = $locdoc->parentNode;
-          if  ( defined($parent) ) {
-            DEBUG "Inserting the new node "
-                    .debugNode($newdoc)." as a child of "
-                    .debugNode($parent)." before "
-                    .debugNode($locdoc).".";
-            $parent->insertBefore($newdoc, $locdoc);
-          }
-        }) unless ($self->{action} eq 'none');
-      }
-      # The original is removed 
-      push(@rtn, sub {
-        my $parent = $locdoc->parentNode;
-        if  ( defined($parent) ) {
-          DEBUG "Removing the node ".debugNode($locdoc).".";
-          $parent->removeChild($locdoc);
-        }
-      }) unless ($self->{action} eq 'none');
-    }
-    return @rtn;
-  } else {
-    if ( @data_nodes != 1  ) {
-      my $cnt = scalar(@data_nodes);
-      INFO "$cnt data nodes where 1 was expected for action $self->{action}.";
-    }
-    if ($self->{action} eq 'none') {
-      DEBUG "Empty sheet encountered.";
-      return ();
-    } else {
-      return map {makeAction($self->{action},
-                             $data_nodes[0], 
-                             $_,
-                             $self->{atname});} @doc_nodes;        
-    }
-  }
-          
+  my ($self, $doc) = @_;
+  return $self->match($doc, 'doc');
 }
 
+#
+#Matches all data nodes 
+# 
+sub matchData($$)
+{
+  my ($self, $data) = @_;
+  return $self->match($data, 'data');
+}
+
+#
+# Does doc/data matching. The xpath from xdoc/xdata
+# is used to match nodes that are then stored as doc/data
+# properties of cloned nodes. A list of such nodes is 
+# returned.
+#
+# self - This injection.
+# $context - The context node for the match.
+# $what - One of 'doc' or 'data'.
+# return - A list of self clones holding the matches.
+#
+sub match($$$)
+{
+  my ($self, $context, $what) = @_;
+
+  # Find the nodes matching the xpath
+  my @nodes = find_matches($context, $self->{"x$what"}); 
+
+  my $cnt = scalar(@nodes);
+  DEBUG "Matched $cnt $what nodes.";
+
+  my @rtn = ();
+  foreach my $node (@nodes) {
+    # clone self
+    my $clone = $self->clone();
+    $clone->{$what} = $node;
+    push(@rtn, $clone);
+  } 
+  
+  return @rtn;
+}
+
+#
+# Execute a member function on all subsheet elements
+# and replace the subsheet with the concatenated returns
+# of the calls.
+#
+sub subsheetsDo($$)
+{
+  my ($self, $do) = @_;
+  DEBUG "Entered subsheetsDo.";
+
+  # Without a subsheet, nothing is done.
+  if ($self->{subsheet}) {
+    DEBUG "Found subsheet.";
+
+    my @subsheets = ();
+    foreach my $inj (@{$self->{subsheet}}) {
+      push(@subsheets, &{$do}($inj));
+    }
+    $self->{subsheet} = \@subsheets;
+  }
+}
+
+#
+# Returns an additional remove action to remove the original 
+# of the target doc node after a sequence of replace actions.
+#
+sub appendRemoveToRepeat()
+{
+  my ($self) = @_;
+
+  if ($self->{'action'} eq 'repeat') {
+    DEBUG "Appending remove.";
+
+    # rmv has the same doc node as inj.
+    my $rmv = $self->clone();
+
+    # We need a cheap match, since matchData
+    # will be done. The result of the match will 
+    # be ignored anyway.
+    $rmv->{xdata} = '.';
+    $rmv->{action} = 'remove';
+
+    return ($self, $rmv); 
+  }
+  
+  return ($self);
+}
+  
+#
+# Executes nodes where doc and data have been matched 
+# before. Execution directly changes the doc.
+#
+sub execute()
+{
+  my ($self) = @_;
+
+  DEBUG "Will execute $self->{action}.";
+
+  if ($self->{action} eq 'repeat') {
+    $self->{doc} =
+    action($self->{action},
+           $self->{data},
+           $self->{doc},
+           $self->{atname});
+  } else {
+    action($self->{action},
+           $self->{data},
+           $self->{doc},
+           $self->{atname});
+  }
+
+  return ($self);
+}
+
+#
+# This does all the work on the subsheet.
+#
+sub run($;$$)
+{
+  my ($self, $dataroot, $docroot) = @_;
+  $dataroot ||= $self->{data}; 
+  $docroot  ||= $self->{doc};
+
+  return ($self) unless $self->{subsheet};
+
+  DEBUG "Entered run.";
+
+  # Match all doc nodes.
+  $self->subsheetsDo(sub {$_[0]->matchDoc($docroot)});
+  # Append remove to all repeat nodes
+  $self->subsheetsDo(sub {$_[0]->appendRemoveToRepeat();});
+  # Match all data nodes
+  $self->subsheetsDo(sub {$_[0]->matchData($dataroot)});
+
+  # Execute the actions. 
+  $self->subsheetsDo(sub {$_[0]->execute();});  
+
+  # Recursion into the subsheets subsheets.
+  $self->subsheetsDo(sub {$_[0]->run();});  
+
+  return ($self);
+}
+
+#
+# Stringifies a node.
+#
 sub dbg_dump($)
 {
   my ($x) = @_; 
@@ -161,30 +256,55 @@ sub dbg_dump($)
 }
 
 #
-# return a funtion to execute the named action by calling the
+# A funtion to execute the named action by calling the
 # Action::<action> function.
 #
-sub makeAction($$$;$)
+sub action($$$;$)
 {
   my ($action, $data, $node, $opt) = @_;
 
-  #get_logger->level($DEBUG);
-
-  return sub {
-    my $sdata =  
-    DEBUG "Doing $action on ".dbg_dump($node)." with ".
+  DEBUG "Doing $action on ".dbg_dump($node)." with ".
             dbg_dump($data).":";
 
-    $action =~ s/-/_/g;
-    no strict qw(refs);
-    my $rtn = &{"Cindy::Action::$action"}($node, $data, $opt);
-    use strict qw(refs);
+  $action =~ s/-/_/g;
+  no strict qw(refs);
+  my $rtn = &{"Cindy::Action::$action"}($node, $data, $opt);
+  use strict qw(refs);
 
-    DEBUG $node->toString()."\n\n";  
+  DEBUG $node->toString()."\n\n";  
 
-    return $rtn;
-  }
+  return $rtn;
 }
 
 1;
+
+# UNFUG?:
+# Match all 1st level actions.
+# Match all 2nd level actions without copying.
+# Execute all 1st level actions.
+# Copy all nodes involved in repeat actions with their 
+#   associated 2nd level actions.
+# Execute all 2nd level actions.
+# 
+
+#
+# Do all doc matches and store the results. This includes the 
+#   subsheet matches.
+# The result is a list actions with its doc. paths replaced with nodes.
+# This is done for subsheets as well.
+#
+
+# 
+# Do all doc matches and store the results. This includes the 
+#   subsheet matches.
+# Repeat actions are treated specially. They spawn of a remove action.
+#   This needs to be done before data matching expands the repeats.
+# Match the data. Note that this does not copy the previously matched
+#   doc nodes. Only references are copied. Otherwise 
+#   actions on subsheets would be lost when copying the doc nodes
+#   while doing a repeat action.
+# Execute all actions. Note that executing repeat clones the doc nodes.
+#
+
+
 

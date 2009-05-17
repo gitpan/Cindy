@@ -1,4 +1,4 @@
-# $Id: Cindy.pm,v 1.3 2008-11-25 18:28:08 jo Exp $
+# $Id: Cindy.pm 10 2009-05-17 18:40:32Z jo $
 # Cindy - Content INjection 
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -13,7 +13,7 @@ use warnings;
 
 use base qw(Exporter);
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 our @EXPORT= qw(get_html_doc get_xml_doc 
                 parse_html_string parse_xml_string 
@@ -76,23 +76,18 @@ sub inject($$$)
   my $docroot = get_root_copy($doc);
 #  my $dataroot = get_root_copy($data);
   my $dataroot = $data->getDocumentElement();
-  # Create a root description to hold the description list 
+  # Create a root description with action none 
+  # to hold the description list 
   my $descroot = Cindy::Injection->new(
       '.', 'none', '.', $descriptions);
    
-  # There are 2 steps because all xpath matches have to be done on the 
-  # unmodified document.
-  
   # Connect the copied docroot with the output document.
   # This has to be done before the tree is matched.
   my $out = XML::LibXML::Document->new($doc->getVersion, $doc->getEncoding);
   $out->setDocumentElement($docroot);
-  
-  # Step 1: match
-  my @injections = $descroot->matchAt($dataroot, $docroot);
-  
-  # Step 2: inject the matches
-  foreach my $func (@injections) {&{$func}();}
+ 
+  # Run the sheet 
+  $descroot->run($dataroot, $docroot);  
 
   return $out;
 }
@@ -123,11 +118,12 @@ Cindy - use unmodified XML or HTML documents as templates.
 C<Cindy> does Content INjection into XML and HTML documents.
 The positions for the modifications as well as for the data
 are identified by xpath expressions. These are kept in a seperate file
-called a Content Injection Sheet. The syntax of this CIS file
+called a Content inJection Sheet. The syntax of this CJS  file (the ending 
+.cis implies a japanese charset in the apache defaults)
 remotely resembles CSS. The actions for content modification are
 those implemented by TAL.
 
-=head2 CIS SYNTAX
+=head2 CJS SYNTAX
 
 The syntax for content injection sheets is pretty simple. In most cases
 it is
@@ -140,25 +136,39 @@ since xpath expressions may end with a colon. The xpath expressions must
 not contain whitespaces. If the syntax for an action is different this
 is documented with the action.
 
-Everything form a ; to the end of the line is ignored and can be used 
+Everything from a ; to the end of the line is ignored and can be used 
 for comments. 
 
-=head2 CIS ACTIONS
+=head2 CJS ACTIONS
+
+Actions locate data and document nodes and perform an operation that
+creates a modified document.
 
 All source paths for actions other than repeat should locate one node.
-Otherwise only the first one is used. The action is executed for all 
-target nodes. 
+Otherwise the action is executed for all source nodes on the same target.
+The action is executed for all target nodes. 
 
-All xpath expressions are matched before the actions are executed. 
-The source nodes are not modified during the execution. 
-Order of execution does matter. If a e.g. target node 
-is omitted, an action that changes its content will not have any 
-effect. 
+Actions are executed in the order they appear in the sheet. Subsheets 
+are executed after the enclosing sheet. 
+
+The following example illustrates the effect of exectuion order. 
+If a target node is omitted, an action that changes its content 
+will not have any effect. 
 
   true()    omit-tag  <target> ;
   <source>  content   <target> ;
 
 So the above is not equvalent to the replace action.
+
+Execution matches document nodes and then data nodes. Thereafter 
+the actions are executed. Since execution of a repeat action copies
+the document node for each repetition, changes to this node
+done after the repeat are lost. At last this is recursively done for 
+all subsheets.
+
+As an unfortunate consequence matches on subsheet doc nodes do see the 
+changes done by actions from enclosing sheets. This behaviour will 
+hopefully change in future releases.
 
 =head3 content
 
@@ -204,7 +214,7 @@ left untouched otherwise.
 
 =head3 repeat
 
-The repeat action is the CIS equivalent of a template engines loop. For 
+The repeat action is the CJS equivalent of a template engines loop. For 
 each match of the source path the source node and the target node are 
 used as root nodes for a sequence of actions. The syntax is
 

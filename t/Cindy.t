@@ -5,13 +5,24 @@
 
 # change 'tests => 1' to 'tests => last_test_to_print';
 
-use Test::More tests => 2;
+use Test::More tests => 3;
 BEGIN { use_ok('Cindy') };
 
 #########################
 
 use Cindy;
 
+sub test($$$) {
+  my ($doc, $data, $cis) = @_;
+  my $xdoc  = parse_html_string($doc);
+  my $xdata = parse_xml_string ($data);
+  my $xcis  = parse_cis_string ($cis);
+
+  return inject($xdata, $xdoc, $xcis)->toStringHTML();
+}
+
+#########################
+# Basic test
 my $cis = q|
 
 ; Testing comments
@@ -136,13 +147,76 @@ This is <font size="+2" color="red">Big and Red</font></p>
 </html>
 |;
 
-#use Cindy;
+is (test($doc, $data, $cis), $expected, 'Basic');
 
-my $xdoc  = parse_html_string($doc);
-my $xdata = parse_xml_string ($data);
-my $xcis  = parse_cis_string ($cis);
+#########################
+# Order of execution
 
-my $check = inject($xdata, $xdoc, $xcis);
+$cis = q|
+/data/before attribute /html/body//span[@class='list1'] test:before ;
+/data/row repeat /html/body/ul[1]/li {
+  . content ./span ;
+  . attribute ./span test:repeat ;
+} ;
+/data/after attribute /html/body//span[@class='list1'] test:after ;
 
-is ($check->toStringHTML(), $expected, 'Full');
+; This is actually bad behaviour that may not be maintained in
+; future releases.
+'before' attribute /html/body//span[@class='list2']  class;
+/data/row repeat /html/body/ul[2]/li {
+  . content ./span[@class='before'] ;
+} ;
+|;
 
+$data = q|<?xml version="1.0" encoding="UTF-8"?>
+<data>
+  <before>This is done before</before>
+  <after>This is done after</after>
+  <row>One</row>
+  <row>Two</row>
+</data>
+|;
+
+$doc = q|<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Tests for cindy order of execution</title>
+</head>
+
+<body>
+
+<a href="http://www.heute-morgen.de/test/About_Cindy.html">About</a>
+
+<ul>
+<li><span class="list1"></span></li>
+</ul>
+
+<ul>
+<li><span class="list2">This is replaced, 
+which means a change done before is matched.</span></li>
+</ul>
+
+</body>
+</html>
+|;
+
+$expected = q|<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>Tests for cindy order of execution</title></head>
+<body>
+
+<a href="http://www.heute-morgen.de/test/About_Cindy.html">About</a>
+
+<ul>
+<li><span class="list1" test:before="This is done before" test:repeat="One">One</span></li>
+<li><span class="list1" test:before="This is done before" test:repeat="Two">Two</span></li>
+</ul>
+<ul>
+<li><span class="before">One</span></li>
+<li><span class="before">Two</span></li>
+</ul>
+</body>
+</html>
+|;
+
+is (test($doc, $data, $cis), $expected, 'Order');
+ 

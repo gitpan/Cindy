@@ -1,4 +1,4 @@
-# $Id: Action.pm,v 1.2 2008-11-23 14:58:44 jo Exp $
+# $Id: Action.pm 11 2009-05-17 18:41:06Z jo $
 # Cindy::Action - Action (content, replace,...) implementation
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -172,6 +172,51 @@ sub attribute($$$)
 
   return 0;
 }
+
+#
+# Copies the doc node and inserts the copy before
+# the original. 
+# The actual repetion is done by the data xpath.
+#
+# return The cloned node
+#
+sub repeat($$) 
+{
+  my ($node, $data) = @_;  
+
+  my $parent = $node->parentNode;
+  # Note that we do a deep copy here.
+  my $new = $node->cloneNode(1);
+  
+  $parent->insertBefore($new, $node);
+  
+  return $new;
+}
+
+#
+# Special actions for internal use
+#
+
+#
+# Removes the given node. Data is ignored. 
+#
+sub remove($$) 
+{
+  my ($node, $data) = @_;  
+    
+  my $parent = $node->parentNode;
+  $parent->removeChild($node);
+
+  return 0;
+}
+
+#
+# Does nothing. Used for subsheet holders.
+#
+sub none($$) 
+{
+}
+
 
 1;
 

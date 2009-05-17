@@ -14,3 +14,8 @@ Revision history for Perl extension Cindy.
 0.03  Sun Mar  1 16:29:27 2009
   - Added dependency on Parse::RecDescend
   - Perl 5.6 should do
+
+0.04  
+  - Complete rewrite of the core (Injection.pm)
+  - Uses Log4Perl if available
+

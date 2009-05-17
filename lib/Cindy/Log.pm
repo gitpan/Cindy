@@ -1,4 +1,4 @@
-# $Id: Log.pm,v 1.1.1.1 2008-11-20 22:08:36 jo Exp $
+# $Id: Log.pm 6 2009-05-14 18:19:17Z jo $
 # Cindy::Log - Logging for Cindy
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -19,6 +19,10 @@ our @EXPORT= qw(DEBUG INFO WARN ERROR FATAL);
 BEGIN {
 eval (q|
 use Cindy::Log::Apache2;
+1;
+|)
+or eval(q|
+use Log::Log4perl qw(:easy);
 1;
 |)
 or eval(q|
