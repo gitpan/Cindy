@@ -19,3 +19,6 @@ Revision history for Perl extension Cindy.
   - Complete rewrite of the core (Injection.pm)
   - Uses Log4Perl if available
 
+0.05
+  - Outputs XPath profile on log level INFO
+  - Shortcut libxml call for . path

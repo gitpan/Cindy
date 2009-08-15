@@ -1,4 +1,4 @@
-# $Id: Apache2.pm 3 2009-03-03 19:13:39Z jo $
+# $Id: Apache2.pm 17 2009-08-15 14:20:10Z jo $
 # Cindy::Apache2 - mod_perl2 interface for the Cindy module.
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -98,6 +98,9 @@ sub handler {
   INFO "Injection successful. Sending content.";
   $r->set_last_modified;
   print $out->toStringHTML();
+
+
+  dump_xpath_profile();
 
   return Apache2::Const::OK;
 }

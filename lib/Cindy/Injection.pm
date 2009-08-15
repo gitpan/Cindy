@@ -1,4 +1,4 @@
-# $Id: Injection.pm 7 2009-05-14 18:20:04Z jo $
+# $Id: Injection.pm 17 2009-08-15 14:20:10Z jo $
 # Cindy::Injection - Injections are the elements of content injection 
 # sheets.
 #
@@ -15,6 +15,7 @@ use warnings;
 use XML::LibXML;
 
 use Cindy::Log;
+use Cindy::Profile;
 require Cindy::Action;
 
 sub new($$$$;$)
@@ -50,6 +51,14 @@ sub clone($)
   return bless(\%rtn, ref($self));
 }
 
+my $prof = Cindy::Profile->new();
+sub dump_profile()
+{
+  $prof = Cindy::Profile->new();
+}
+END {
+  $prof = undef;
+}
 
 #
 # Wrapper for find.
@@ -64,7 +73,13 @@ sub find_matches($$) {
   # No xpath, no results
   return @data_nodes unless ($xpath);
 
-  my $found = eval {$data->find( $xpath );};
+  my $cp = Cindy::Profile::before();   
+  my $found = $data;
+  # . matches happen very often and are quite expensive
+  if ($xpath ne '.') {
+    $found = eval {$data->find( $xpath );};
+  }
+  $prof->after($cp, $xpath);
   if ($@) {
     ERROR "Error searching $xpath:$@";
   } else {

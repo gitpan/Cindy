@@ -1,4 +1,4 @@
-# $Id: Cindy.pm 10 2009-05-17 18:40:32Z jo $
+# $Id: Cindy.pm 16 2009-08-15 14:18:37Z jo $
 # Cindy - Content INjection 
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -13,12 +13,12 @@ use warnings;
 
 use base qw(Exporter);
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 our @EXPORT= qw(get_html_doc get_xml_doc 
                 parse_html_string parse_xml_string 
                 parse_cis parse_cis_string
-                inject);
+                inject dump_xpath_profile);
 
 use XML::LibXML;
 use Cindy::Sheet;
@@ -68,6 +68,11 @@ sub get_root_copy($)
   my ($doc)   = @_;
   my $root  = $doc->documentElement();
   return $root->cloneNode( 1 );
+}
+
+sub dump_xpath_profile()
+{
+  Cindy::Injection::dump_profile();
 }
 
 sub inject($$$)
