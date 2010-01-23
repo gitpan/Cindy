@@ -1,4 +1,4 @@
-# $Id: Cindy.pm 16 2009-08-15 14:18:37Z jo $
+# $Id: Cindy.pm 25 2010-01-23 16:39:17Z jo $
 # Cindy - Content INjection 
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -13,7 +13,7 @@ use warnings;
 
 use base qw(Exporter);
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 our @EXPORT= qw(get_html_doc get_xml_doc 
                 parse_html_string parse_xml_string 

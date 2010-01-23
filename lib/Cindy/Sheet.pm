@@ -1,4 +1,4 @@
-# $Id: Sheet.pm 3 2009-03-03 19:13:39Z jo $
+# $Id: Sheet.pm 26 2010-01-23 16:39:39Z jo $
 # Cindy::Sheet - Parsing Conten Injection Sheets
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -12,9 +12,10 @@ package Cindy::Sheet;
 use Parse::RecDescent;
 use Cindy::Injection;
 use Cindy::Log;
-# For debugging
-use Data::Dumper;
 
+#$::RD_TRACE = 1;
+#$::RD_HINT = 1;
+#$::RD_WARN = 1;
 
 my $parser = Parse::RecDescent->new(q%
 
@@ -27,24 +28,57 @@ action: /content|replace|omit-tag|condition/
 attribute: /attribute/
 repeat: /repeat/
 
-injection: xpath action xpath  
-       {Cindy::Injection->new(@item[1..3]);} 
-injection: xpath attribute xpath atname  
-       {Cindy::Injection->new(@item[1..3], $item{atname});} 
-injection: xpath repeat xpath "{" injection_list "}"  
-       {Cindy::Injection->new(@item[1..3], $item{injection_list});}
-# TODO: Improve handling of empty injections 
-injection: {Cindy::Injection->new('.', 'none', '.', undef);}
+injection: xpath action <commit> xpath 
+       {Cindy::Injection->new(@item[1,2,4]);} 
+injection: xpath attribute <commit> xpath atname  
+       {Cindy::Injection->new(@item[1,2,4], $item{atname});} 
+injection: xpath repeat <commit> xpath sublist  
+       {Cindy::Injection->new(@item[1,2,4], $item{sublist});}
+# Empty injection (comment)
+injection: .../\s*;/ {0;}
+# No matches (uncommit to try the resync rule below) 
+injection: <error> 
+# resume parsing after the next separator and output the error
+injection: /[^;]+;[^\\n]*\\n?/ warn
 
-injection_list: injection(s /;[^\\n]*\\n/)
-        | {Cindy::Sheet::warn_on_errors($thisparser->{errors});}
+separator: /;/ <commit> <skip: qr/[^\\n]*/> /\\n?/
+separator: ..."}"
+separator: .../\Z/
+separator: <error:Expected ";" but found  "}.($text=~/(.*)\\n/,$1).qq{" instead.>
+separator: /[^;]+;[^\\n]*\\n?/ warn
+
+# A single "statement"
+full_injection: injection separator {$item[1];}
+
+# Sublists
+sub_injection: ..."}" <commit><reject>
+sub_injection: full_injection
+sub_injection_list: sub_injection(s) {[grep($_, @{$item[1]})];} 
+sublist: "{" <commit> sub_injection_list "}" {$item[3];}
+
+# Main injection list
+injection_list: full_injection(s) {[grep($_, @{$item[1]})];} 
+complete_injection_list: injection_list /\Z/ {$item[1];}
+complete_injection_list: <error> | warn
+
+# output error action
+warn: {Cindy::Sheet::warn_on_errors($thisparser->{errors});}
 
 %)
 or die "Invalid RecDescent grammar.";
 # Note that // is not a usable comment delimiter with XPath expressions
-# comment: "#" /[^\\n]*/ "\\n"
 
-#$::RD_TRACE = 1;
+sub warn_on_errors($)
+{
+  my ($errors) = @_;
+  if ($errors and @{$errors}) {
+    foreach my $ref (@{$errors}) {
+      my ($error, $line) = @$ref;
+      Cindy::Log::WARN "line $line: $error\n";
+    }
+  }
+  return 0; 
+}
 
 sub parse_cis($)
 {
@@ -54,25 +88,14 @@ sub parse_cis($)
   my $text;
   read(CIS, $text, -s CIS);
   close($text);
- #print Dumper($parser->injection_list($text));
-  return $parser->injection_list($text);
-}
-
-sub warn_on_errors($)
-{
-  my ($errors) = @_;
-  if ($errors and @{$errors}) {
-    foreach my $error (@{$errors}) {
-      WARN $error;
-    }
-  } else {
-    WARN "Parsing did not find any rules."; 
-  }  
+  my $rtn = $parser->complete_injection_list($text);
+  # warn_on_errors($parser->{errors});
+  return $rtn;
 }
 
 sub parse_cis_string($)
 {
-  return $parser->injection_list($_[0]);
+  return $parser->complete_injection_list($_[0]);
 }
 
 1;

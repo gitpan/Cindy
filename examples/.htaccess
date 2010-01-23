@@ -1,3 +1,4 @@
+# $Id: .htaccess 24 2010-01-23 16:38:31Z jo $
 
 # Cindy::Apache2 must be in the path
 <Perl>

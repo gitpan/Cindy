@@ -1,3 +1,5 @@
+; $Id: cindy.cjs 24 2010-01-23 16:38:31Z jo $
+
 /data/title       content   /html/head/title ;
 /data/content     content   /html/body/h2[1] ;
 /data/replace     replace   /html/body/p[1]/b[1] ;
