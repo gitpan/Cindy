@@ -26,3 +26,9 @@ Revision history for Perl extension Cindy.
 0.06
   - Added error handling to the RecDescent based
     cjs parser.
+
+0.07
+  - Added comment action
+  - Fixed cjs parser to handle comments first
+  - Pass http charset to html parser
+

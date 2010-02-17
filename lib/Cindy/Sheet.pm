@@ -1,4 +1,4 @@
-# $Id: Sheet.pm 26 2010-01-23 16:39:39Z jo $
+# $Id: Sheet.pm 31 2010-01-30 18:11:08Z jo $
 # Cindy::Sheet - Parsing Conten Injection Sheets
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -24,18 +24,18 @@ xpath:  /\\"[^\\"]+\\"/
 xpath:  /\\S+/
 atname: /\\w[\\w\\d.:-]*/
 
-action: /content|replace|omit-tag|condition/
+action: /content|replace|omit-tag|condition|comment/
 attribute: /attribute/
 repeat: /repeat/
 
+# Empty injection (comment)
+injection: .../\s*;/ {0;}
 injection: xpath action <commit> xpath 
        {Cindy::Injection->new(@item[1,2,4]);} 
 injection: xpath attribute <commit> xpath atname  
        {Cindy::Injection->new(@item[1,2,4], $item{atname});} 
 injection: xpath repeat <commit> xpath sublist  
        {Cindy::Injection->new(@item[1,2,4], $item{sublist});}
-# Empty injection (comment)
-injection: .../\s*;/ {0;}
 # No matches (uncommit to try the resync rule below) 
 injection: <error> 
 # resume parsing after the next separator and output the error

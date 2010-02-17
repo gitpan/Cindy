@@ -1,4 +1,4 @@
-# $Id: Action.pm 11 2009-05-17 18:41:06Z jo $
+# $Id: Action.pm 45 2010-02-17 17:44:46Z jo $
 # Cindy::Action - Action (content, replace,...) implementation
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -30,12 +30,23 @@ sub is_true($)
   my ($data) = @_;
 
   return 0 if (!$data); 
+  return $data->textContent if ($data->can('textContent'));
+  return $data->value if ($data->can('value')); 
+}
+
+#
+# Evaluate data node text
+#
+sub text($)
+{
+  my ($data) = @_;
 
   return $data->textContent if ($data->can('textContent'));
-
   return $data->value if ($data->can('value')); 
-
+  # This may be text by some perl magic
+  return $data;
 }
+
 
 #
 # Get list of child nodes
@@ -68,9 +79,7 @@ sub condition($$)
 	#	remove node 
   if  (!is_true($data)) {
     my $parent = $node->parentNode;
-    $parent->removeChild( $node )
-    or warn "Node ".$node->nodeName
-            ." could not be removed from ".$node->nodeName.".";
+    $parent->removeChild( $node );
   }
 
   return 0;
@@ -91,15 +100,32 @@ sub content($$)
   # the target node will be left unchanged. 
   if (defined($data)) {
     $node->removeChildNodes();	
-    if ($data->can('childNodes')) {
+    if ( $data->can('childNodes')
+      || $data->isa('XML::LibXML::Attr')) {
       foreach my $child (copy_children($data, $node)) {
         $node->appendChild($child);
       }
     } else {
-      # No child nodes, so its hopefully text
+      # No child nodes, not an attr. so its hopefully text
       $node->appendChild(
-        $node->ownerDocument->createTextNode($data));
+          $node->ownerDocument->createTextNode(text($data)));
     }
+  }  
+
+  return 0;
+}
+
+#
+# Appends a comment as a child of the node. Data is
+# interpreted as the text for the comment.
+#
+sub comment($$) 
+{
+  my ($node, $data) = @_;  
+
+  if (defined($data)) {
+    $node->appendChild(
+      $node->ownerDocument->createComment(text($data)));
   }  
 
   return 0;
@@ -161,11 +187,7 @@ sub attribute($$$)
   my ($node, $data, $name) = @_;  
 
   if ($data) {
-    my $value = $data;
-    #TODO: Think about this:
-    $value = $data->textContent if ($data->can('textContent'));
-    $value = $data->value if ($data->can('value'));
-    $node->setAttribute($name, $value);    
+    $node->setAttribute($name, text($data));    
   } else {
     $node->removeAttribute($name);
   }

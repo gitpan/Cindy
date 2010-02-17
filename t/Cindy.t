@@ -37,6 +37,7 @@ my $cis = q|
 /data/cfalse      condition /html/body/p[2]/span[1] ;
 /data/ctrue       condition /html/body/p[2]/span[2] ;
 false()           condition /html/body/p[2]/span[3] ;
+"'A comment'"     comment   /html/body/select ;
 /data/repeat/row  repeat    /html/body/table/tr {
   ./value           content   ./td[1] ;
   ./text            content   ./td[2] 
@@ -142,7 +143,8 @@ This is <font size="+2" color="red">Big and Red</font></p>
 </table>
 <select><option value="1">one</option>
 <option value="2" selected>two</option>
-<option value="3">three</option></select>
+<option value="3">three</option>
+<!--A comment--></select>
 </body>
 </html>
 |;

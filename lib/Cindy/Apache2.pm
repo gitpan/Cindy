@@ -1,4 +1,4 @@
-# $Id: Apache2.pm 17 2009-08-15 14:20:10Z jo $
+# $Id: Apache2.pm 42 2010-02-17 17:35:47Z jo $
 # Cindy::Apache2 - mod_perl2 interface for the Cindy module.
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -16,7 +16,8 @@ use Apache2::Response ();
 use Apache2::SubRequest ();
 use Apache2::Filter ();
 use Apache2::Log;
-use Apache2::Const -compile => qw(OK DECLINED HTTP_NOT_MODIFIED SERVER_ERROR);
+use Apache2::Const -compile => qw(OK DECLINED 
+    HTTP_NOT_MODIFIED HTTP_NOT_FOUND SERVER_ERROR);
 use APR::Const    -compile => qw(:error SUCCESS);
 #use Log::Log4perl qw(:easy);
 
@@ -58,7 +59,7 @@ sub handler {
   if ($rv != Apache2::Const::OK) {
     return $rv;
   }
-  # Subrequest for DATA
+  # Subrequest for CIS
   my $cis;
   $rv = read_subrequest($r, CIS, \$cis);
   if ($rv != Apache2::Const::OK) {
@@ -97,8 +98,8 @@ sub handler {
 
   INFO "Injection successful. Sending content.";
   $r->set_last_modified;
+  $r->content_type('text/html;charset='.$doc->actualEncoding());
   print $out->toStringHTML();
-
 
   dump_xpath_profile();
 
@@ -112,6 +113,9 @@ sub read_subrequest($$$;$)
 {
   my ($r, $what, $rtext, $rtype) = @_;
   my $rsub = lookup_by_env($r, $what);
+  if (!defined($rsub)) {
+    return Apache2::Const::HTTP_NOT_FOUND;
+  }
   my $rv = $rsub->run_trapped($rtext);
   if ($rv != Apache2::Const::OK) {
     return $rv;
@@ -148,6 +152,7 @@ sub lookup_by_env($$)
   my $rtn;
   my $env_file = $r->subprocess_env("CINDY_$pname"."_FILE");
   if ($env_file) {
+    DEBUG "Looking up '$env_file' for $pname."; 
     $rtn = $r->lookup_file($env_file);
   }
 
@@ -156,6 +161,7 @@ sub lookup_by_env($$)
     WARN "CINDY_$pname._FILE=$env_file overwritten "
           ."by CINDY_$pname._URI=$env_uri." 
       if ($rtn);
+    DEBUG "Looking up '$env_uri' for $pname."; 
     $rtn = $r->lookup_uri($env_uri);
   }
 
@@ -179,7 +185,13 @@ sub parse_by_type($$$)
   my ($type, $text, $what) = @_;
 
   if ($type =~ m/html/io) {
-    return parse_html_string($text);
+    my %opt = (html_parse_noimplied => 1);
+    if ($type =~ /;\s*charset\s*=\s*(\S+)/) {
+      # We pass the encoding from the header
+      # to the HTML parser
+      $opt{encoding} = $1;
+    }
+    return parse_html_string($text, \%opt);
   } elsif ($type =~ m/xml/io) {
     return parse_xml_string($text);
   } else {

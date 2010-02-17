@@ -1,4 +1,4 @@
-# $Id: Cindy.pm 25 2010-01-23 16:39:17Z jo $
+# $Id: Cindy.pm 44 2010-02-17 17:40:34Z jo $
 # Cindy - Content INjection 
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -13,7 +13,7 @@ use warnings;
 
 use base qw(Exporter);
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 our @EXPORT= qw(get_html_doc get_xml_doc 
                 parse_html_string parse_xml_string 
@@ -39,10 +39,41 @@ sub get_xml_doc($)
   return $parser->parse_file($file);
 }
 
-sub parse_html_string($)
+sub omit_nodes {
+  my ($doc, $tag) = @_; 
+
+  my $found = $doc->find( "///$tag" );
+  foreach my $node ($found->get_nodelist()) {
+    my $parent = $node->parentNode;
+
+    foreach my $child ($node->childNodes()) {
+      $parent->insertBefore($child->cloneNode(1), $node);
+    }
+  
+    $parent->removeChild($node);
+  }
+}
+
+sub parse_html_string($;$)
 {
-  my ($string)  = @_;
-  return $parser->parse_html_string($_[0]);
+  my ($string, $ropt)  = @_;
+  $ropt ||= {};
+  my $html_parse_noimplied = $ropt->{html_parse_noimplied};
+
+  my $dont_omit =  !$html_parse_noimplied 
+               ||  ($string =~ /<html|<body/);
+
+  my $doc = $parser->parse_html_string($string, $ropt);
+
+  if (!$dont_omit) {
+    # Until HTML_PARSE_NOIMPLIED is implemented by 
+    # libxml2 (and passed by XML::LibXML) we need
+    # to remove html/body tags that have been added to 
+    # fragments.
+    omit_nodes($doc, 'html');
+    omit_nodes($doc, 'body');
+  }
+  return $doc;
 }
 
 sub parse_xml_string($)
@@ -198,11 +229,17 @@ content evaluates to true the target node is replaced by its children.
 This means that if the source tag exists and its content is not '' or
 0 the target tag is removed while its content remains.
 
+=head3 comment
+
+The source nodes comntent is move into a comment node. This comment node
+is appended to the children of the target node. This can be useful for 
+debugging and enables injection of SSI directives.
+
 =head3 attribute
 
 The syntax has an additional field atname
 
-  <source>  content   <target> <atname> ;
+  <source>  attribute   <target> <atname> ;
 
 that holds the name of the attribute. If the source node exists, its 
 content replaces or sets the value of the atname attribute of the 
