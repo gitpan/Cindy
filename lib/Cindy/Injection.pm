@@ -1,4 +1,4 @@
-# $Id: Injection.pm 17 2009-08-15 14:20:10Z jo $
+# $Id: Injection.pm 65 2010-04-01 17:22:14Z jo $
 # Cindy::Injection - Injections are the elements of content injection 
 # sheets.
 #
@@ -282,9 +282,9 @@ sub action($$$;$)
             dbg_dump($data).":";
 
   $action =~ s/-/_/g;
-  no strict qw(refs);
-  my $rtn = &{"Cindy::Action::$action"}($node, $data, $opt);
-  use strict qw(refs);
+  # This is possibel with strict refs
+  my $call = \&{"Cindy::Action::$action"};
+  my $rtn = &$call($node, $data, $opt);
 
   DEBUG $node->toString()."\n\n";  
 

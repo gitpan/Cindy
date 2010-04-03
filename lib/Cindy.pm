@@ -1,4 +1,4 @@
-# $Id: Cindy.pm 44 2010-02-17 17:40:34Z jo $
+# $Id: Cindy.pm 62 2010-03-25 20:40:22Z jo $
 # Cindy - Content INjection 
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -13,7 +13,7 @@ use warnings;
 
 use base qw(Exporter);
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 our @EXPORT= qw(get_html_doc get_xml_doc 
                 parse_html_string parse_xml_string 
@@ -61,7 +61,7 @@ sub parse_html_string($;$)
   my $html_parse_noimplied = $ropt->{html_parse_noimplied};
 
   my $dont_omit =  !$html_parse_noimplied 
-               ||  ($string =~ /<html|<body/);
+               ||  ($string =~ /<html|<body/i);
 
   my $doc = $parser->parse_html_string($string, $ropt);
 
@@ -270,5 +270,8 @@ Joachim Zobel <jz-2008@heute-morgen.de>
 
 =head1 SEE ALSO
 
-See Cindy/Sheet.pm for the RecDescent grammar for content injection sheets. 
+See Cindy/Sheet.pm for the RecDescent grammar for content injection sheets. The
+usage of Cindy through apache is implemented in Cindy::Apache2. This is
+distributed seperately (see  L<http://search.cpan.org/%7ejzobel/Cindy-Apache2/>)
+since it introduces additional dependencies.
 

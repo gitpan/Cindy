@@ -32,3 +32,8 @@ Revision history for Perl extension Cindy.
   - Fixed cjs parser to handle comments first
   - Pass http charset to html parser
 
+0.08 
+  - Moved Cindy::Apache2 to a seperate CPAN package 
+    to get explicit Apache2 dependencies.
+  - Fixed upper case HTML handling
+  - critic cleanup

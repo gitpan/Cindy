@@ -5,12 +5,10 @@ README
 t/Cindy.t
 lib/Cindy.pm
 lib/Cindy/Action.pm
-lib/Cindy/Apache2.pm
 lib/Cindy/Injection.pm
 lib/Cindy/Log.pm
 lib/Cindy/Profile.pm
 lib/Cindy/Sheet.pm
-lib/Cindy/Log/Apache2.pm
 lib/Cindy/Log/Default.pm
 examples/cindy.cjs
 examples/cindy.html

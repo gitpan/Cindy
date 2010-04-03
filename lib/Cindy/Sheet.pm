@@ -1,4 +1,4 @@
-# $Id: Sheet.pm 31 2010-01-30 18:11:08Z jo $
+# $Id: Sheet.pm 64 2010-04-01 17:21:29Z jo $
 # Cindy::Sheet - Parsing Conten Injection Sheets
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -8,7 +8,10 @@
 package Cindy::Sheet;
 
 #our @EXPORT= qw(parse_cis parse_cis_string); 
- 
+
+use strict;
+use warnings;
+
 use Parse::RecDescent;
 use Cindy::Injection;
 use Cindy::Log;
@@ -83,11 +86,11 @@ sub warn_on_errors($)
 sub parse_cis($)
 {
   my ($file) = @_;
-  open(CIS, $file) 
+  open(my $CIS, '<', $file) 
   or die "Failed to open $file:$!";
   my $text;
-  read(CIS, $text, -s CIS);
-  close($text);
+  read($CIS, $text, -s $CIS);
+  close($CIS);
   my $rtn = $parser->complete_injection_list($text);
   # warn_on_errors($parser->{errors});
   return $rtn;

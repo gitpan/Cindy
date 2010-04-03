@@ -1,4 +1,4 @@
-# $Id: Log.pm 6 2009-05-14 18:19:17Z jo $
+# $Id: Log.pm 63 2010-03-31 19:11:52Z jo $
 # Cindy::Log - Logging for Cindy
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -16,6 +16,8 @@ use base qw(Exporter);
 
 our @EXPORT= qw(DEBUG INFO WARN ERROR FATAL); 
 
+## no critic (ProhibitStringyEval);
+# Strings are evaled to avoid compile time checking
 BEGIN {
 eval (q|
 use Cindy::Log::Apache2;
@@ -30,6 +32,7 @@ use Cindy::Log::Default;
 1;
 |);
 }
+## use critic
 
 1;
 
