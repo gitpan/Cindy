@@ -1,4 +1,4 @@
-; $Id: cindy.cjs 24 2010-01-23 16:38:31Z jo $
+; $Id: cindy.cjs 69 2010-04-23 20:49:22Z jo $
 
 /data/title       content   /html/head/title ;
 /data/content     content   /html/body/h2[1] ;
@@ -9,7 +9,7 @@
 /data/color       attribute /html/body/p[2]/span[2]/font color ;
 /data/cfalse      condition /html/body/p[2]/span[1] ;
 /data/ctrue       condition /html/body/p[2]/span[2] ;
-/data/repeat/row  repeat    /html/body/table/tr {
+/data/repeat/row  repeat    /html/body/table[1]/tr {
   ./value           content   ./td[1] ;
   ./text            content   ./td[2] 
 } ;
@@ -18,3 +18,9 @@
   ./selected        attribute   .  selected ;
   ./text            content     . 
 } ;
+/data/filter/*    repeat      /html/body/table[2]/tr/td 
+                              local-name(DATA/*)=DOC/*/@class {
+  .                 content   . ;
+  'red'             attribute . bgcolor 
+} ;
+

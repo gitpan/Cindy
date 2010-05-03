@@ -1,4 +1,4 @@
-# $Id: Cindy.pm 62 2010-03-25 20:40:22Z jo $
+# $Id: Cindy.pm 74 2010-05-03 16:10:53Z jo $
 # Cindy - Content INjection 
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -13,7 +13,7 @@ use warnings;
 
 use base qw(Exporter);
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 our @EXPORT= qw(get_html_doc get_xml_doc 
                 parse_html_string parse_xml_string 
@@ -260,9 +260,18 @@ The repeat action is the CJS equivalent of a template engines loop. For
 each match of the source path the source node and the target node are 
 used as root nodes for a sequence of actions. The syntax is
 
-  <source>  repeat   <target> {
+  <source>  repeat   <target>  [condition] {
     <actions>
   } ;
+
+The optional condition is an xpath expression that is run in the context 
+of the root node of a temporary document fragment. The fragment has 
+two children, DOC and DATA which hold a subtree from a repeat doc respective data 
+match. Only those combinations where the condition evaluates to true are 
+used, all others are discarded. 
+
+Note that the repeat condition is an EXPERIMENTAL feature, it may well 
+change.
 
 =head1 AUTHOR
 

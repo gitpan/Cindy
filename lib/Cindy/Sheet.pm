@@ -1,4 +1,4 @@
-# $Id: Sheet.pm 64 2010-04-01 17:21:29Z jo $
+# $Id: Sheet.pm 71 2010-04-24 12:49:43Z jo $
 # Cindy::Sheet - Parsing Conten Injection Sheets
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -31,14 +31,17 @@ action: /content|replace|omit-tag|condition|comment/
 attribute: /attribute/
 repeat: /repeat/
 
+# A condition is an xpath before a sublist
+condition: xpath ..."{"
+       {$item[1];}
 # Empty injection (comment)
 injection: .../\s*;/ {0;}
 injection: xpath action <commit> xpath 
        {Cindy::Injection->new(@item[1,2,4]);} 
 injection: xpath attribute <commit> xpath atname  
        {Cindy::Injection->new(@item[1,2,4], $item{atname});} 
-injection: xpath repeat <commit> xpath sublist  
-       {Cindy::Injection->new(@item[1,2,4], $item{sublist});}
+injection: xpath repeat <commit> xpath condition(?) sublist  
+       {Cindy::Injection->new(@item[1,2,4], $item{sublist}, $item{'condition(?)'}->[0]);}
 # No matches (uncommit to try the resync rule below) 
 injection: <error> 
 # resume parsing after the next separator and output the error

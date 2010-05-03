@@ -1,4 +1,4 @@
-# $Id: Injection.pm 65 2010-04-01 17:22:14Z jo $
+# $Id: Injection.pm 68 2010-04-23 20:49:07Z jo $
 # Cindy::Injection - Injections are the elements of content injection 
 # sheets.
 #
@@ -18,9 +18,9 @@ use Cindy::Log;
 use Cindy::Profile;
 require Cindy::Action;
 
-sub new($$$$;$)
+sub new($$$$;$$)
 {
-  my ($class, $xdata, $action, $xdoc, $opt) = @_;
+  my ($class, $xdata, $action, $xdoc, $opt, $xfilter) = @_;
 
   #get_logger->level($DEBUG);
 
@@ -32,9 +32,10 @@ sub new($$$$;$)
 
   # The meaning of the optional argument differs
   # depending on the action. 
-  $self->{atname} = $opt if ($action eq 'attribute');
+  $self->{atname} = $opt if ( $action eq 'attribute' );
   $self->{subsheet} = $opt if ( $action eq 'repeat'
                              or $action eq 'none' );
+  $self->{xfilter} = $xfilter if ( $action eq 'repeat' );
 
   return bless($self, $class); 
 }
@@ -143,7 +144,8 @@ sub match($$$)
   my @nodes = find_matches($context, $self->{"x$what"}); 
 
   my $cnt = scalar(@nodes);
-  DEBUG "Matched $cnt $what nodes.";
+  DEBUG "Matched $cnt $what nodes for action "
+    .$self->{action}.".";
 
   my @rtn = ();
   foreach my $node (@nodes) {
@@ -154,6 +156,45 @@ sub match($$$)
   } 
   
   return @rtn;
+}
+
+#
+# Check if the injection matches a filter expression.
+# return ($self) in case of a match, () otherwise. 
+#
+sub filter 
+{
+  my ($self) = @_;
+  my $xfilter = $self->{xfilter};
+  if ( not $xfilter 
+       # avoid filtering the remove action
+    or $self->{action} ne 'repeat') {
+    return ($self); 
+  }
+
+  INFO "Filtering with $xfilter.";  
+
+  my $fragment = XML::LibXML::DocumentFragment->new();
+  my $context = XML::LibXML::Element->new( 'ROOT' );
+  my $doc = XML::LibXML::Element->new( 'DOC' );
+  my $data = XML::LibXML::Element->new( 'DATA' );
+
+  $fragment->appendChild($context);
+  $context->appendChild($doc);
+  $context->appendChild($data);
+
+  $doc->appendChild($self->{doc}->cloneNode(1)); # if ($self->{doc}->toString());
+  $data->appendChild($self->{data}->cloneNode(1)); # if ($self->{data}->toString());
+
+  my @found = find_matches($context, 
+                  "self::node()[boolean($xfilter)]");
+  if ( scalar(@found) >= 1 ) { 
+      DEBUG "Match. Kept.";
+      return ($self);
+  } else {
+    DEBUG "No match. Removed.";
+    return;
+  }
 }
 
 #
@@ -173,6 +214,12 @@ sub subsheetsDo($$)
     my @subsheets = ();
     foreach my $inj (@{$self->{subsheet}}) {
       push(@subsheets, &{$do}($inj));
+    }
+    { # Check for removals
+      my ($cnt_bef, $cnt_aft) =
+          (scalar(@{$self->{subsheet}}), scalar(@subsheets));
+      DEBUG "Length of subsheet reduced from $cnt_bef to $cnt_aft."
+          if ($cnt_bef != $cnt_aft);
     }
     $self->{subsheet} = \@subsheets;
   }
@@ -232,7 +279,11 @@ sub execute()
 
 #
 # This does all the work on the subsheet.
-#
+# The subsheet is a list of injections. It
+# may get longer during the steps of run.
+# The doc side is matched first because the 
+# in case of repeat the matched doc fragments
+# are copied.
 sub run($;$$)
 {
   my ($self, $dataroot, $docroot) = @_;
@@ -241,20 +292,26 @@ sub run($;$$)
 
   return ($self) unless $self->{subsheet};
 
-  DEBUG "Entered run.";
-
   # Match all doc nodes.
+  DEBUG "WILL MATCH DOC";
   $self->subsheetsDo(sub {$_[0]->matchDoc($docroot)});
   # Append remove to all repeat nodes
+  DEBUG "WILL APPEND REMOVE";
   $self->subsheetsDo(sub {$_[0]->appendRemoveToRepeat();});
   # Match all data nodes
+  DEBUG "WILL MATCH DATA";
   $self->subsheetsDo(sub {$_[0]->matchData($dataroot)});
-
-  # Execute the actions. 
+  # Filter all subsheets
+  DEBUG "WILL FILTER";
+  $self->subsheetsDo(sub {$_[0]->filter($self->{xfilter})});
+  # Execute the actions.
+  DEBUG "WILL EXECUTE"; 
   $self->subsheetsDo(sub {$_[0]->execute();});  
 
   # Recursion into the subsheets subsheets.
+  DEBUG ">>>>> WILL RUN";
   $self->subsheetsDo(sub {$_[0]->run();});  
+  DEBUG ">>>>> DID RUN";  
 
   return ($self);
 }
@@ -292,34 +349,5 @@ sub action($$$;$)
 }
 
 1;
-
-# UNFUG?:
-# Match all 1st level actions.
-# Match all 2nd level actions without copying.
-# Execute all 1st level actions.
-# Copy all nodes involved in repeat actions with their 
-#   associated 2nd level actions.
-# Execute all 2nd level actions.
-# 
-
-#
-# Do all doc matches and store the results. This includes the 
-#   subsheet matches.
-# The result is a list actions with its doc. paths replaced with nodes.
-# This is done for subsheets as well.
-#
-
-# 
-# Do all doc matches and store the results. This includes the 
-#   subsheet matches.
-# Repeat actions are treated specially. They spawn of a remove action.
-#   This needs to be done before data matching expands the repeats.
-# Match the data. Note that this does not copy the previously matched
-#   doc nodes. Only references are copied. Otherwise 
-#   actions on subsheets would be lost when copying the doc nodes
-#   while doing a repeat action.
-# Execute all actions. Note that executing repeat clones the doc nodes.
-#
-
 
 

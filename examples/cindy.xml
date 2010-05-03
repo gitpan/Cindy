@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: cindy.xml 24 2010-01-23 16:38:31Z jo $ -->
+<!-- $Id: cindy.xml 69 2010-04-23 20:49:22Z jo $ -->
 <data>
   <title>This is the Cindy Test Page</title>
   <content>Hello Test</content>
@@ -25,5 +25,10 @@
   </repeat>
 	<cfalse>0</cfalse>
 	<ctrue>1</ctrue>
+  <filter>
+    <first>1</first>
+    <second>2</second>
+    <third>3</third>
+  </filter>
 </data>
 

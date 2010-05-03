@@ -5,7 +5,7 @@
 
 # change 'tests => 1' to 'tests => last_test_to_print';
 
-use Test::More tests => 3;
+use Test::More tests => 4;
 BEGIN { use_ok('Cindy') };
 
 #########################
@@ -221,4 +221,77 @@ $expected = q|<html xmlns="http://www.w3.org/1999/xhtml">
 |;
 
 is (test($doc, $data, $cis), $expected, 'Order');
+
+#########################
+# Repeat condition
+
+$cis = q|
+/data/filter/*    repeat      /html/body/table/tr/td 
+                              local-name(DATA/*)=DOC/*/@class {
+  .                 content   . ;
+  'red'             attribute . bgcolor 
+} ;
+|;
+
+$data = q|<?xml version="1.0" encoding="UTF-8"?>
+<data>
+  <filter>
+    <third>3</third>
+    <first>1</first>
+    <second>2</second>
+  </filter>
+</data>
+|;
+
+$doc = q|<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Tests the cindy repeat condition</title>
+</head>
+
+<body>
+
+<table>
+	<tr>
+    <th>First</th>
+		<td class="first">Value</td>
+  </tr>
+	<tr>
+    <th>Second</th>
+		<td class="second">Value</td>
+  </tr>
+	<tr>
+    <th>Third</th>
+		<td class="third">Value</td>
+  </tr>
+</table>
+
+</body>
+</html>
+|;
+
+$expected = q|<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>Tests the cindy repeat condition</title></head>
+<body>
+
+<table>
+<tr>
+<th>First</th>
+		<td class="first" bgcolor="red">1</td>
+  </tr>
+<tr>
+<th>Second</th>
+		<td class="second" bgcolor="red">2</td>
+  </tr>
+<tr>
+<th>Third</th>
+		<td class="third" bgcolor="red">3</td>
+  </tr>
+</table>
+</body>
+</html>
+|;
+
+is (test($doc, $data, $cis), $expected, 'Repeat condition');
+
  
