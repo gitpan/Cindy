@@ -1,4 +1,5 @@
-; $Id: cindy.cjs 69 2010-04-23 20:49:22Z jo $
+; $Id: cindy.cjs 81 2010-05-21 12:03:07Z jo $
+use xpath ;
 
 /data/title       content   /html/head/title ;
 /data/content     content   /html/body/h2[1] ;

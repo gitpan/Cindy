@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Cindy
-version:            0.09
+version:            0.11
 abstract:           use unmodified XML or HTML documents as templates.
 author:
     - JZOBEL (jz-2009@heute-morgen.de)
@@ -11,8 +11,9 @@ configure_requires:
 build_requires:
     ExtUtils::MakeMaker:  0
 requires:
-    Parse::RecDescent:  0
-    XML::LibXML:        0
+    HTML::Selector::XPath:  0
+    Parse::RecDescent:    0
+    XML::LibXML:          0
 no_index:
     directory:
         - t

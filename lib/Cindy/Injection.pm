@@ -1,4 +1,4 @@
-# $Id: Injection.pm 68 2010-04-23 20:49:07Z jo $
+# $Id: Injection.pm 79 2010-05-20 10:07:52Z jo $
 # Cindy::Injection - Injections are the elements of content injection 
 # sheets.
 #
@@ -13,16 +13,38 @@ use strict;
 use warnings;
 
 use XML::LibXML;
+use constant HAS_SELECTORS => eval {
+    require HTML::Selector::XPath;
+};
 
 use Cindy::Log;
 use Cindy::Profile;
 require Cindy::Action;
 
-sub new($$$$;$$)
+#
+# Create an Injection.
+# The first 4 parameters are passed as a 
+# list without names.
+#
+# xdata - the data selector
+# action - the name of the action
+# xdoc - the document selector
+# selector - use 'xpath' or 'css'
+#
+# atname - attribute name (only for attribute action)
+# subsheet - the subsheet (only for repeat):w! 
+# xfilter - the filter condition (only for repeat)
+#
+sub new
 {
-  my ($class, $xdata, $action, $xdoc, $opt, $xfilter) = @_;
+  my $class = shift;
+  my ($xdata, $action, $xdoc, $selector) = @_; 
+  my %parms = @_[4..$#_];
 
   #get_logger->level($DEBUG);
+
+  $xdata = css_to_xpath($xdata) if ($selector eq 'css');
+  $xdoc = css_to_xpath($xdoc) if ($selector eq 'css');
 
   my $self = {
     xdata  => $xdata,
@@ -32,10 +54,13 @@ sub new($$$$;$$)
 
   # The meaning of the optional argument differs
   # depending on the action. 
-  $self->{atname} = $opt if ( $action eq 'attribute' );
-  $self->{subsheet} = $opt if ( $action eq 'repeat'
-                             or $action eq 'none' );
-  $self->{xfilter} = $xfilter if ( $action eq 'repeat' );
+  $self->{atname} = $parms{atname} 
+      if ( $action eq 'attribute' );
+  $self->{subsheet} = $parms{sublist} 
+      if ( $action eq 'repeat'
+        or $action eq 'none' );
+  $self->{xfilter} = $parms{xfilter} 
+      if ( $action eq 'repeat' );
 
   return bless($self, $class); 
 }
@@ -117,12 +142,24 @@ sub matchDoc($$)
 }
 
 #
-#Matches all data nodes 
+# Matches all data nodes 
+# Note that "no data found" is expressed by 
+# returning an injection where data is undef.
+# This differs from the handling of doc.
+# As a result a data node that is not found 
+# generally triggers removal.
 # 
 sub matchData($$)
 {
   my ($self, $data) = @_;
-  return $self->match($data, 'data');
+  my @matches = $self->match($data, 'data');
+  if (scalar(@matches) == 0) {
+    my $rtn = $self->clone();
+    $rtn->{data} = undef;
+    return ($rtn);
+  } else {
+    return @matches;
+  }
 }
 
 #
@@ -159,6 +196,64 @@ sub match($$$)
 }
 
 #
+# Convert w3c css selectors to XPath.
+# This is copied from Naoki Tomitas Template-Semantic.
+# 
+my $element_with_attr_regex = qr{
+    ^
+    \s*
+    (
+        \@[^@]+? |
+        (?:
+            (?: [^"]+? | .+?"[^"]+".+? )
+            (?: \@[^@]+? )?
+        )
+    )
+    \s*
+    (?: , | $ )
+}x;
+
+sub css_to_xpath {
+    my ($inp) = @_;
+   
+    # The dependency is optional 
+    if (!HAS_SELECTORS) {
+        ERROR "Tried to use css selctor $inp, but HTML::Selector::XPath is not installed.";
+        return $inp;
+    }
+
+    my $exp = $inp;
+    my $xpath;
+    {
+        # css selector extends @attr syntax
+        my @x;
+        while ($exp =~ s/$element_with_attr_regex//) {
+            my $e = $1;
+            my ($elem, $attr) = $e =~ m{(.*?)/?(@[^/@]+)?$};
+            my $x;
+            if ($elem) {
+                my $x = HTML::Selector::XPath::selector_to_xpath($elem);
+                   $x .= "/$attr" if $attr;
+                push @x, $x;
+            } elsif ($attr) {
+                push @x, "//$attr";
+            }
+        }
+        $xpath = join " | ", @x;
+    }
+
+    # We use "" as a way to express . 
+    $xpath =~ s{^$}{.};
+    my @xpaths = split (/\|/, $xpath);
+    # We need expressions relative to the context node
+    $xpath = join('|', map {s{/}{./};$_;} @xpaths);
+
+    INFO "Translated $inp to $xpath.";
+
+    return $xpath;
+}
+
+#
 # Check if the injection matches a filter expression.
 # return ($self) in case of a match, () otherwise. 
 #
@@ -172,7 +267,7 @@ sub filter
     return ($self); 
   }
 
-  INFO "Filtering with $xfilter.";  
+  #INFO "Filtering with $xfilter.";  
 
   my $fragment = XML::LibXML::DocumentFragment->new();
   my $context = XML::LibXML::Element->new( 'ROOT' );

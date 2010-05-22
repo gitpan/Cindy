@@ -1,4 +1,4 @@
-# $Id: Cindy.pm 74 2010-05-03 16:10:53Z jo $
+# $Id: Cindy.pm 84 2010-05-21 18:17:10Z jo $
 # Cindy - Content INjection 
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -13,7 +13,7 @@ use warnings;
 
 use base qw(Exporter);
 
-our $VERSION = '0.09';
+our $VERSION = '0.11';
 
 our @EXPORT= qw(get_html_doc get_xml_doc 
                 parse_html_string parse_xml_string 
@@ -115,7 +115,8 @@ sub inject($$$)
   # Create a root description with action none 
   # to hold the description list 
   my $descroot = Cindy::Injection->new(
-      '.', 'none', '.', $descriptions);
+      '.', 'none', '.', 'xpath', 
+      sublist => $descriptions);
    
   # Connect the copied docroot with the output document.
   # This has to be done before the tree is matched.
@@ -159,6 +160,10 @@ called a Content inJection Sheet. The syntax of this CJS  file (the ending
 remotely resembles CSS. The actions for content modification are
 those implemented by TAL.
 
+If you want to use Cindy for web development you will probably need
+Cindy::Apache2 (see  L<http://search.cpan.org/%7ejzobel/Cindy-Apache2/>) 
+which is distributed separately since it introduces additional dependencies. 
+
 =head2 CJS SYNTAX
 
 The syntax for content injection sheets is pretty simple. In most cases
@@ -166,14 +171,25 @@ it is
 
   <source path> <action> <target path> ;
 
-The source and target path are xpath expressions. The action describes 
-how to move the data. The whitespace before the terminating ; is required,
+The source and target path are xpath expressions by default. 
+The action describes how to move the data. The whitespace before the 
+terminating ; is required,
 since xpath expressions may end with a colon. The xpath expressions must 
 not contain whitespaces. If the syntax for an action is different this
 is documented with the action.
 
 Everything from a ; to the end of the line is ignored and can be used 
 for comments. 
+
+A first line
+
+  use css ;
+
+switches the interpretation of source and target path from xpath to 
+CSS selectors. These are less powerful but according to Parr 
+(see  L<http://www.cs.usfca.edu/~parrt/papers/mvc.templates.pdf>) this 
+can be considered a good thing. Using css selectors reduces the 
+entanglement index from 4 to 1.
 
 =head2 CJS ACTIONS
 
@@ -279,8 +295,11 @@ Joachim Zobel <jz-2008@heute-morgen.de>
 
 =head1 SEE ALSO
 
-See Cindy/Sheet.pm for the RecDescent grammar for content injection sheets. The
-usage of Cindy through apache is implemented in Cindy::Apache2. This is
-distributed seperately (see  L<http://search.cpan.org/%7ejzobel/Cindy-Apache2/>)
-since it introduces additional dependencies.
+See Cindy/Sheet.pm for the RecDescent grammar for content injection sheets.
+
+If you prefer a classic push template engine, that uses an API to fill the template
+from within the application see  L<http://search.cpan.org/~tomita/Template-Semantic>.
+This also uses xpath or css selectors to move data into unmodified templates.
+
+
 

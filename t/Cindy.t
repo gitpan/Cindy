@@ -5,7 +5,7 @@
 
 # change 'tests => 1' to 'tests => last_test_to_print';
 
-use Test::More tests => 4;
+use Test::More tests => 5;
 BEGIN { use_ok('Cindy') };
 
 #########################
@@ -24,6 +24,7 @@ sub test($$$) {
 #########################
 # Basic test
 my $cis = q|
+use xpath ;
 
 ; Testing comments
 /data/title/@test content   /html/head/title ;
@@ -39,15 +40,17 @@ my $cis = q|
 false()           condition /html/body/p[2]/span[3] ;
 "'A comment'"     comment   /html/body/select ;
 /data/repeat/row  repeat    /html/body/table/tr {
-  ./value           content   ./td[1] ;
-  ./text            content   ./td[2] 
+  ./value           content   ./th ;
+  ./text            content   ./td 
 } ;
 /data/repeat/row  repeat      /html/body/select/option {
   ./value           attribute   .  value ;
   ./selected        attribute   .  selected ;
   ./text            content     . 
 } ;
-
+; Test "no data found" case
+/data/does-not-exist  attribute /html/body//span class ;
+/data/does-not-exist  attribute /html/body//p class ;
 |;
 
 my $data = q|<?xml version="1.0" encoding="utf-8" ?>
@@ -76,6 +79,7 @@ my $data = q|<?xml version="1.0" encoding="utf-8" ?>
   </repeat>
 	<cfalse>0</cfalse>
 	<ctrue>1</ctrue>
+  <comment>A comment</comment>
 </data>
 |;
 
@@ -89,17 +93,17 @@ my $doc = q|<html xmlns="http://www.w3.org/1999/xhtml">
 <a href="http://www.heute-morgen.de/test/About_Cindy.html">About</a>
 
 <h2 test="I will survive">This is an Error for content</h2>
-<p><b>This is an Error for replace</b>
-<b><i>This is not bold,</i> too.</b>
+<p class="first"><b class="first">This is an Error for replace</b>
+<b class="second"><i>This is not bold,</i> too.</b>
 This is <font>Big and Red</font></p>
-<p><span>Das wird <b>entfernt</b>.</span>
-<span>Das <font>bleibt</font>.</span>
-<span>Das <font>verschwindet.</font>.</span>
+<p class="second"><span class="first">Das wird <b>entfernt</b>.</span>
+<span class="second">Das <font>bleibt</font>.</span>
+<span class="third">Das <font>verschwindet.</font>.</span>
 </p>
 
 <table>
 	<tr>
-    <td>0</td>
+    <th>0</th>
 		<td>Text</td>
   </tr>
 </table>
@@ -129,15 +133,15 @@ This is <font size="+2" color="red">Big and Red</font></p>
 
 <table>
 <tr>
-<td>1</td>
+<th>1</th>
 		<td>one</td>
   </tr>
 <tr>
-<td>2</td>
+<th>2</th>
 		<td>two</td>
   </tr>
 <tr>
-<td>3</td>
+<th>3</th>
 		<td>three</td>
   </tr>
 </table>
@@ -152,9 +156,48 @@ This is <font size="+2" color="red">Big and Red</font></p>
 is (test($doc, $data, $cis), $expected, 'Basic');
 
 #########################
+# Basic with css selectors
+
+$cis = q|
+; Testing comment before usage
+use css ;
+
+; Testing comments
+title@test      content    "head > title" ;
+content         content    "h2[test]" ;
+replace         replace    "p.first > b.first" ;
+omit            omit-tag   "p.first > b.second" ;
+size            attribute  "p.first > font" size ;
+color           attribute  "p.first > font" color ;
+color           attribute  "p > span > font" color ;
+cfalse          condition  "p > span.first, span.third" ;
+ctrue           condition  "p > span.second" ;
+comment         comment    "select" ;
+"repeat > row"  repeat     "table > tr" {
+  value           content   th ;
+  text            content   td 
+} ;
+"repeat > row"  repeat      "select > option" {
+  value           attribute   ""  value ;
+  selected        attribute   ""  selected ;
+  text            content     "" 
+} ;
+; remove class
+does-not-exist  attribute  "span, p" class ;  
+|;
+
+SKIP: {
+  skip "HTML::Selector::XPath is not installed.",
+       1 unless eval {require HTML::Selector::XPath;} ;
+
+  is(test($doc, $data, $cis), $expected, 'CSS');
+}
+
+#########################
 # Order of execution
 
 $cis = q|
+
 /data/before attribute /html/body//span[@class='list1'] test:before ;
 /data/row repeat /html/body/ul[1]/li {
   . content ./span ;
