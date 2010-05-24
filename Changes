@@ -41,8 +41,12 @@ Revision history for Perl extension Cindy.
 0.09
   - Added repeat condition
 
-0.10
+0.11
   - Fixed "no data found" handling
   - Implemented css selectors similiar to 
     Template::Semantics
+
+0.12
+  - Fixed "no data found" handling for repeat
+    and added tests.
 

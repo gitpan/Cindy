@@ -5,7 +5,7 @@
 
 # change 'tests => 1' to 'tests => last_test_to_print';
 
-use Test::More tests => 5;
+use Test::More tests => 6;
 BEGIN { use_ok('Cindy') };
 
 #########################
@@ -14,11 +14,23 @@ use Cindy;
 
 sub test($$$) {
   my ($doc, $data, $cis) = @_;
-  my $xdoc  = parse_html_string($doc);
+  my $xdoc, $is_xml_doc = ($doc =~ /^<\?xml /);
+  if ($is_xml_doc) {
+    $xdoc  = parse_xml_string($doc);
+  } else {
+    $xdoc  = parse_html_string($doc);
+  }
   my $xdata = parse_xml_string ($data);
   my $xcis  = parse_cis_string ($cis);
 
-  return inject($xdata, $xdoc, $xcis)->toStringHTML();
+  # Data will not be modified
+  $xdata->indexElements();
+
+  if ($is_xml_doc) {
+    return inject($xdata, $xdoc, $xcis)->toString();
+  } else {
+    return inject($xdata, $xdoc, $xcis)->toStringHTML();
+  }
 }
 
 #########################
@@ -337,4 +349,52 @@ $expected = q|<html xmlns="http://www.w3.org/1999/xhtml">
 
 is (test($doc, $data, $cis), $expected, 'Repeat condition');
 
- 
+#########################
+# No data found
+
+$cis = q|
+
+/data/does-not-exist  content /doc/content ;
+/data/does-not-exist  replace /doc/replace ;
+/data/does-not-exist  omit-tag /doc/omit-tag   ;
+/data/does-not-exist  attribute /doc/attribute attribute ;
+/data/does-not-exist  condition /doc/condition ;
+/data/does-not-exist  comment /doc/comment ;
+/data/does-not-exist  repeat /doc/repeat {
+  ./does-not-exist      content ./does-not-exist ;
+} ;
+|;
+
+$data = q|<?xml version="1.0" encoding="UTF-8"?>
+<data/>
+|;
+
+$doc = q|<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+<content>This should be unchanged.</content>
+<replace>This should be unchanged.</replace>
+<omit-tag>This should be unchanged.</omit-tag>
+<attribute 
+  attribute="will be removed">This should be unchanged.</attribute>
+<omit-tag>This should be unchanged.</omit-tag>
+<condition>This should be completely removed.</condition>
+<comment>This should be unchanged.</comment>
+<repeat>This should be completely removed.</repeat>
+</doc>
+|;
+
+$expected = q|<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+<content>This should be unchanged.</content>
+<replace>This should be unchanged.</replace>
+<omit-tag>This should be unchanged.</omit-tag>
+<attribute>This should be unchanged.</attribute>
+<omit-tag>This should be unchanged.</omit-tag>
+
+<comment>This should be unchanged.</comment>
+
+</doc>
+|;
+
+is (test($doc, $data, $cis), $expected, 'No data found');
+

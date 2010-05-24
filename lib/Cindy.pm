@@ -1,4 +1,4 @@
-# $Id: Cindy.pm 84 2010-05-21 18:17:10Z jo $
+# $Id: Cindy.pm 88 2010-05-24 14:55:09Z jo $
 # Cindy - Content INjection 
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -13,7 +13,7 @@ use warnings;
 
 use base qw(Exporter);
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 our @EXPORT= qw(get_html_doc get_xml_doc 
                 parse_html_string parse_xml_string 
@@ -171,12 +171,15 @@ it is
 
   <source path> <action> <target path> ;
 
+If the syntax for an action differs from the above this
+is documented with the action.
+
 The source and target path are xpath expressions by default. 
 The action describes how to move the data. The whitespace before the 
 terminating ; is required,
 since xpath expressions may end with a colon. The xpath expressions must 
-not contain whitespaces. If the syntax for an action is different this
-is documented with the action.
+not contain whitespaces. Alternatively they can be enclosed in double 
+quotes. 
 
 Everything from a ; to the end of the line is ignored and can be used 
 for comments. 
@@ -188,7 +191,7 @@ A first line
 switches the interpretation of source and target path from xpath to 
 CSS selectors. These are less powerful but according to Parr 
 (see  L<http://www.cs.usfca.edu/~parrt/papers/mvc.templates.pdf>) this 
-can be considered a good thing. Using css selectors reduces the 
+can be considered a good thing. Using css selectors reduces Cindies 
 entanglement index from 4 to 1.
 
 =head2 CJS ACTIONS
@@ -229,6 +232,8 @@ source node. This means that the text of the source tag with all tags
 it contains replaces the content of the target tag. If data is not
 a node, it is treated as text.
 
+If no source node matched, the target node will be left unchanged. 
+
 =head3 replace
 
 The child nodes of the source node replace the target node and all its 
@@ -237,6 +242,8 @@ by the content of the subtag. This is equivalent to
 
   <source>  content   <target> ;
   true()    omit-tag  <target> ;
+
+If no source node matched, the target node will be left unchanged. 
 
 =head3 omit-tag
 
@@ -267,7 +274,7 @@ is removed from the target node.
 The source node is used as a condition. If it exists and if its text 
 content evaluates to true nothing is done. Otherwise the target node 
 and its children are removed. This means that the target tag is removed 
-if the source tage does not exist or contains '', 0 or 0.0 whileit is 
+if the source tage does not exist or contains '', 0 or 0.0 while it is 
 left untouched otherwise.
 
 =head3 repeat

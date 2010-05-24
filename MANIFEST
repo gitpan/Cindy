@@ -13,5 +13,7 @@ lib/Cindy/Log/Default.pm
 examples/cindy.cjs
 examples/cindy.html
 examples/cindy.xml
-examples/.htaccess
+examples/css.cjs
+examples/css.html
+examples/css.xml
 META.yml                                 Module meta-data (added by MakeMaker)

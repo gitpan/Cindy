@@ -1,4 +1,4 @@
-# $Id: Injection.pm 79 2010-05-20 10:07:52Z jo $
+# $Id: Injection.pm 87 2010-05-24 14:53:45Z jo $
 # Cindy::Injection - Injections are the elements of content injection 
 # sheets.
 #
@@ -145,7 +145,8 @@ sub matchDoc($$)
 # Matches all data nodes 
 # Note that "no data found" is expressed by 
 # returning an injection where data is undef.
-# This differs from the handling of doc.
+# This leaves the decision what to do to the action.
+# Note that it differs from the handling of doc.
 # As a result a data node that is not found 
 # generally triggers removal.
 # 
@@ -357,11 +358,14 @@ sub execute()
   DEBUG "Will execute $self->{action}.";
 
   if ($self->{action} eq 'repeat') {
-    $self->{doc} =
+    my $newdoc = 
     action($self->{action},
            $self->{data},
            $self->{doc},
            $self->{atname});
+    if (defined($newdoc)) {
+      $self->{doc} = $newdoc;
+    }
   } else {
     action($self->{action},
            $self->{data},

@@ -1,4 +1,4 @@
-# $Id: Action.pm 45 2010-02-17 17:44:46Z jo $
+# $Id: Action.pm 87 2010-05-24 14:53:45Z jo $
 # Cindy::Action - Action (content, replace,...) implementation
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -206,13 +206,16 @@ sub repeat($$)
 {
   my ($node, $data) = @_;  
 
-  my $parent = $node->parentNode;
-  # Note that we do a deep copy here.
-  my $new = $node->cloneNode(1);
+  if (defined($data)) {
+    my $parent = $node->parentNode;
+    # Note that we do a deep copy here.
+    my $new = $node->cloneNode(1);
   
-  $parent->insertBefore($new, $node);
-  
-  return $new;
+    $parent->insertBefore($new, $node);
+    return $new;
+  } else {
+    return undef;
+  }
 }
 
 #
