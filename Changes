@@ -50,3 +50,6 @@ Revision history for Perl extension Cindy.
   - Fixed "no data found" handling for repeat
     and added tests.
 
+0.13
+  - Fixed a repeat problem caused by the no data found fix.
+

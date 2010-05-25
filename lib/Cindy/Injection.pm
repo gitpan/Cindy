@@ -1,4 +1,4 @@
-# $Id: Injection.pm 87 2010-05-24 14:53:45Z jo $
+# $Id: Injection.pm 89 2010-05-25 10:31:37Z jo $
 # Cindy::Injection - Injections are the elements of content injection 
 # sheets.
 #
@@ -98,6 +98,8 @@ sub find_matches($$) {
 
   # No xpath, no results
   return @data_nodes unless ($xpath);
+  # No data, no results
+  return @data_nodes unless (defined $data);
 
   my $cp = Cindy::Profile::before();   
   my $found = $data;
