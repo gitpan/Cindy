@@ -1,4 +1,4 @@
-# $Id: Injection.pm 89 2010-05-25 10:31:37Z jo $
+# $Id: Injection.pm 92 2010-06-03 09:14:30Z jo $
 # Cindy::Injection - Injections are the elements of content injection 
 # sheets.
 #
@@ -12,13 +12,15 @@ package Cindy::Injection;
 use strict;
 use warnings;
 
+use Readonly;
 use XML::LibXML;
-use constant HAS_SELECTORS => eval {
+my Readonly $HAS_SELECTORS = eval {
     require HTML::Selector::XPath;
 };
 
 use Cindy::Log;
 use Cindy::Profile;
+use Cindy::XPathContext;
 require Cindy::Action;
 
 #
@@ -105,7 +107,8 @@ sub find_matches($$) {
   my $found = $data;
   # . matches happen very often and are quite expensive
   if ($xpath ne '.') {
-    $found = eval {$data->find( $xpath );};
+    my $xpc = Cindy::XPathContext->new($data);
+    $found = eval {$xpc->find( $xpath );};
   }
   $prof->after($cp, $xpath);
   if ($@) {
@@ -220,7 +223,7 @@ sub css_to_xpath {
     my ($inp) = @_;
    
     # The dependency is optional 
-    if (!HAS_SELECTORS) {
+    if (!$HAS_SELECTORS) {
         ERROR "Tried to use css selctor $inp, but HTML::Selector::XPath is not installed.";
         return $inp;
     }
@@ -249,7 +252,9 @@ sub css_to_xpath {
     $xpath =~ s{^$}{.};
     my @xpaths = split (/\|/, $xpath);
     # We need expressions relative to the context node
-    $xpath = join('|', map {s{/}{./};$_;} @xpaths);
+    $xpath = join('|', map {my $r = $_; 
+                            $r =~ s{/}{./}; 
+                            $r;}            @xpaths);
 
     INFO "Translated $inp to $xpath.";
 

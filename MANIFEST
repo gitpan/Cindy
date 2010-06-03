@@ -9,6 +9,7 @@ lib/Cindy/Injection.pm
 lib/Cindy/Log.pm
 lib/Cindy/Profile.pm
 lib/Cindy/Sheet.pm
+lib/Cindy/XPathContext.pm
 lib/Cindy/Log/Default.pm
 examples/cindy.cjs
 examples/cindy.html

@@ -1,4 +1,4 @@
-# $Id: Cindy.pm 89 2010-05-25 10:31:37Z jo $
+# $Id: Cindy.pm 90 2010-06-03 08:40:29Z jo $
 # Cindy - Content INjection 
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -13,7 +13,7 @@ use warnings;
 
 use base qw(Exporter);
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 our @EXPORT= qw(get_html_doc get_xml_doc 
                 parse_html_string parse_xml_string 
@@ -295,6 +295,15 @@ used, all others are discarded.
 
 Note that the repeat condition is an EXPERIMENTAL feature, it may well 
 change.
+
+=head2 XPATH FUNCTIONS
+
+A small number of additional XPath functions have been implemented. 
+
+=head3 current()
+
+This returns the context node. It behaves like the XSLT identically 
+named XSLT function.
 
 =head1 AUTHOR
 

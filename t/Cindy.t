@@ -14,7 +14,8 @@ use Cindy;
 
 sub test($$$) {
   my ($doc, $data, $cis) = @_;
-  my $xdoc, $is_xml_doc = ($doc =~ /^<\?xml /);
+  my $xdoc; 
+  my $is_xml_doc = ($doc =~ /^<\?xml/);
   if ($is_xml_doc) {
     $xdoc  = parse_xml_string($doc);
   } else {
@@ -56,7 +57,7 @@ false()           condition /html/body/p[2]/span[3] ;
   ./text            content   ./td 
 } ;
 /data/repeat/row  repeat      /html/body/select/option {
-  ./value           attribute   .  value ;
+  current()/value           attribute   .  value ;
   ./selected        attribute   .  selected ;
   ./text            content     . 
 } ;

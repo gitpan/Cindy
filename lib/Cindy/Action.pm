@@ -1,4 +1,4 @@
-# $Id: Action.pm 87 2010-05-24 14:53:45Z jo $
+# $Id: Action.pm 91 2010-06-03 09:04:59Z jo $
 # Cindy::Action - Action (content, replace,...) implementation
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -214,7 +214,7 @@ sub repeat($$)
     $parent->insertBefore($new, $node);
     return $new;
   } else {
-    return undef;
+    return;
   }
 }
 
