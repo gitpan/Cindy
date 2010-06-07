@@ -1,4 +1,4 @@
-# $Id: Injection.pm 92 2010-06-03 09:14:30Z jo $
+# $Id: Injection.pm 94 2010-06-07 17:39:24Z jo $
 # Cindy::Injection - Injections are the elements of content injection 
 # sheets.
 #
@@ -12,9 +12,8 @@ package Cindy::Injection;
 use strict;
 use warnings;
 
-use Readonly;
 use XML::LibXML;
-my Readonly $HAS_SELECTORS = eval {
+use constant HAS_SELECTORS => eval {
     require HTML::Selector::XPath;
 };
 
@@ -223,7 +222,7 @@ sub css_to_xpath {
     my ($inp) = @_;
    
     # The dependency is optional 
-    if (!$HAS_SELECTORS) {
+    if (!HAS_SELECTORS) {
         ERROR "Tried to use css selctor $inp, but HTML::Selector::XPath is not installed.";
         return $inp;
     }

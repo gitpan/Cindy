@@ -55,3 +55,7 @@ Revision history for Perl extension Cindy.
 
 0.14
   - Added current() XPath function
+
+0.15
+  - Removed Readonly.pm dependency suggested by perlcritic
+
