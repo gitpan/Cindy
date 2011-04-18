@@ -24,11 +24,12 @@ sub new {
   return bless($self, $class);  
 }
 
-sub DESTROY
-{
-  my ($self) = @_;
-  #$self->unregisterFunction('current');
-}
+#sub DESTROY
+#{
+#  my ($self) = @_;
+#  $self->unregisterFunction('current');
+#  $self->SUPER::DESTROY();
+#}
 
 1;
 

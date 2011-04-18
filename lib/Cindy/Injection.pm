@@ -1,4 +1,4 @@
-# $Id: Injection.pm 94 2010-06-07 17:39:24Z jo $
+# $Id: Injection.pm 103 2011-04-17 19:51:07Z jo $
 # Cindy::Injection - Injections are the elements of content injection 
 # sheets.
 #
@@ -106,8 +106,10 @@ sub find_matches($$) {
   my $found = $data;
   # . matches happen very often and are quite expensive
   if ($xpath ne '.') {
-    my $xpc = Cindy::XPathContext->new($data);
-    $found = eval {$xpc->find( $xpath );};
+    $found = eval {
+      my $xpc = Cindy::XPathContext->new($data);
+      $xpc->find( $xpath );
+    };
   }
   $prof->after($cp, $xpath);
   if ($@) {

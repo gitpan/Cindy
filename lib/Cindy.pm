@@ -1,4 +1,4 @@
-# $Id: Cindy.pm 95 2010-06-07 17:41:03Z jo $
+# $Id: Cindy.pm 105 2011-04-18 17:35:52Z jo $
 # Cindy - Content INjection 
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -13,7 +13,7 @@ use warnings;
 
 use base qw(Exporter);
 
-our $VERSION = '0.15';
+our $VERSION = '0.17';
 
 our @EXPORT= qw(get_html_doc get_xml_doc 
                 parse_html_string parse_xml_string 
@@ -25,17 +25,19 @@ use Cindy::Sheet;
 #use Memoize;
 #memoize('get_doc');
  
-my $parser = XML::LibXML->new();
-
 sub get_html_doc($)
 {
   my ($file)  = @_;
+  my $parser = XML::LibXML->new();
+
   return $parser->parse_html_file($file);
 }
 
 sub get_xml_doc($)
 {
   my ($file)  = @_;
+  my $parser = XML::LibXML->new();
+
   return $parser->parse_file($file);
 }
 
@@ -63,6 +65,8 @@ sub parse_html_string($;$)
   my $dont_omit =  !$html_parse_noimplied 
                ||  ($string =~ /<html|<body/i);
 
+  my $parser = XML::LibXML->new();
+
   my $doc = $parser->parse_html_string($string, $ropt);
 
   if (!$dont_omit) {
@@ -78,6 +82,8 @@ sub parse_html_string($;$)
 
 sub parse_xml_string($)
 {
+  my $parser = XML::LibXML->new();
+
   return $parser->parse_string($_[0]);
 }
 
@@ -98,7 +104,8 @@ sub get_root_copy($)
 {
   my ($doc)   = @_;
   my $root  = $doc->documentElement();
-  return $root->cloneNode( 1 );
+  my $rtn = $root->cloneNode( 1 );
+  return $rtn;
 }
 
 sub dump_xpath_profile()
