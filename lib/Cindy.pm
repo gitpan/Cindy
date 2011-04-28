@@ -1,4 +1,4 @@
-# $Id: Cindy.pm 105 2011-04-18 17:35:52Z jo $
+# $Id: Cindy.pm 116 2011-04-28 16:29:14Z jo $
 # Cindy - Content INjection 
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -13,7 +13,7 @@ use warnings;
 
 use base qw(Exporter);
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 
 our @EXPORT= qw(get_html_doc get_xml_doc 
                 parse_html_string parse_xml_string 
@@ -244,13 +244,24 @@ If no source node matched, the target node will be left unchanged.
 =head3 replace
 
 The child nodes of the source node replace the target node and all its 
-content. THis means that the target tag including any content is replaced
-by the content of the subtag. This is equivalent to
+content. This means that the target tag including any content is replaced
+by the content of the source tag. This is equivalent to
 
   <source>  content   <target> ;
   true()    omit-tag  <target> ;
 
 If no source node matched, the target node will be left unchanged. 
+
+=head3 copy
+
+The source node with all its content replaces the target node 
+and all its content. This means that the target tag including any 
+content is replaced by the the source tag and its content. 
+
+If no source node matched, the target node will be left unchanged. 
+
+Be aware that this requires the source tag to be valid in the target 
+document.
 
 =head3 omit-tag
 
@@ -261,7 +272,7 @@ This means that if the source tag exists and its content is not '' or
 
 =head3 comment
 
-The source nodes comntent is move into a comment node. This comment node
+The source nodes content is moved into a comment node. This comment node
 is appended to the children of the target node. This can be useful for 
 debugging and enables injection of SSI directives.
 
@@ -309,7 +320,7 @@ A small number of additional XPath functions have been implemented.
 
 =head3 current()
 
-This returns the context node. It behaves like the XSLT identically 
+This returns the context node. It behaves like the identically 
 named XSLT function.
 
 =head1 AUTHOR

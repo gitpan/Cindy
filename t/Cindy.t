@@ -44,6 +44,7 @@ use xpath ;
 /data/content     content   /html/body/h2[1] ;
 ; Testing enclosing "
 "/data/replace"   replace   /html/body/p[1]/b[1] ;
+/data/script      copy      /html/head/script ;
 /data/omit        omit-tag  /html/body/p[1]/b[2] ;
 /data/size        attribute /html/body/p[1]/font size ;
 /data/color       attribute /html/body/p[1]/font color ;
@@ -93,12 +94,15 @@ my $data = q|<?xml version="1.0" encoding="utf-8" ?>
 	<cfalse>0</cfalse>
 	<ctrue>1</ctrue>
   <comment>A comment</comment>
+  <script language="javascript"
+    >if (2 &lt; 1) alert("Impossible");</script>
 </data>
 |;
 
 my $doc = q|<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>This is an Error</title>
+  <script />
 </head>
 
 <body>
@@ -130,7 +134,10 @@ This is <font>Big and Red</font></p>
 |;
 
 my $expected =  q|<html xmlns="http://www.w3.org/1999/xhtml">
-<head><title>This is the Cindy Test Page</title></head>
+<head>
+<title>This is the Cindy Test Page</title>
+<script language="javascript">if (2 < 1) alert("Impossible");</script>
+</head>
 <body>
 
 <a href="http://www.heute-morgen.de/test/About_Cindy.html">About</a>
@@ -179,6 +186,7 @@ use css ;
 title@test      content    "head > title" ;
 content         content    "h2[test]" ;
 replace         replace    "p.first > b.first" ;
+script          copy       "head > script" ;
 omit            omit-tag   "p.first > b.second" ;
 size            attribute  "p.first > font" size ;
 color           attribute  "p.first > font" color ;
@@ -357,6 +365,7 @@ $cis = q|
 
 /data/does-not-exist  content /doc/content ;
 /data/does-not-exist  replace /doc/replace ;
+/data/does-not-exist  copy /doc/copy ;
 /data/does-not-exist  omit-tag /doc/omit-tag   ;
 /data/does-not-exist  attribute /doc/attribute attribute ;
 /data/does-not-exist  condition /doc/condition ;
@@ -374,6 +383,7 @@ $doc = q|<?xml version="1.0" encoding="UTF-8"?>
 <doc>
 <content>This should be unchanged.</content>
 <replace>This should be unchanged.</replace>
+<copy>This should be unchanged.</copy>
 <omit-tag>This should be unchanged.</omit-tag>
 <attribute 
   attribute="will be removed">This should be unchanged.</attribute>
@@ -388,6 +398,7 @@ $expected = q|<?xml version="1.0" encoding="UTF-8"?>
 <doc>
 <content>This should be unchanged.</content>
 <replace>This should be unchanged.</replace>
+<copy>This should be unchanged.</copy>
 <omit-tag>This should be unchanged.</omit-tag>
 <attribute>This should be unchanged.</attribute>
 <omit-tag>This should be unchanged.</omit-tag>

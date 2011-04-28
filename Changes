@@ -59,3 +59,13 @@ Revision history for Perl extension Cindy.
 0.15
   - Removed Readonly.pm dependency suggested by perlcritic
 
+0.16
+  - Not released
+
+0.17
+  - Fixed memory leak
+  - Use a precompiled CJS parser
+
+0.18
+  - Added copy action
+

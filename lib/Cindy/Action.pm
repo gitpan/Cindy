@@ -1,4 +1,4 @@
-# $Id: Action.pm 91 2010-06-03 09:04:59Z jo $
+# $Id: Action.pm 115 2011-04-28 16:28:51Z jo $
 # Cindy::Action - Action (content, replace,...) implementation
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -154,6 +154,26 @@ sub replace($$)
 
   return 0;
 }
+
+#
+# The node is removed and the parent node gets 
+# the data node and its children instead. 
+#
+sub copy($$) 
+{
+  my ($node, $data) = @_;  
+  
+  # If no node matched,
+  # the target node will be left unchanged. 
+  if (defined($data)) {
+    my $parent = $node->parentNode;
+    $parent->insertBefore($data->cloneNode(1), $node);
+    $parent->removeChild($node);
+  }
+
+  return 0;
+}
+
 
 #
 # If data and its text content evaluate to true the node is 
