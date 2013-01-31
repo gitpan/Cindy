@@ -56,9 +56,11 @@ sub DESTROY($) {
   my @top = sort {$self->{$b}[1] <=> $self->{$a}[1];}  
               keys(%{$self});
   foreach my $name (@top[0 .. 9]) {
-    my $cnt = $self->{$name}[0];
-    my $tm = $self->{$name}[1];
-    INFO "$name: $cnt calls, $tm seconds";
+    if (defined($name)) {
+      my $cnt = $self->{$name}[0];
+      my $tm = $self->{$name}[1];
+      INFO "$name: $cnt calls, $tm seconds";
+    }
   }
 }
 

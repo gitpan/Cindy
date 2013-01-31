@@ -1,4 +1,4 @@
-# $Id: Cindy.pm 116 2011-04-28 16:29:14Z jo $
+# $Id: Cindy.pm 120 2013-01-31 11:34:41Z jo $
 # Cindy - Content INjection 
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -13,7 +13,7 @@ use warnings;
 
 use base qw(Exporter);
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 our @EXPORT= qw(get_html_doc get_xml_doc 
                 parse_html_string parse_xml_string 
@@ -22,8 +22,7 @@ our @EXPORT= qw(get_html_doc get_xml_doc
 
 use XML::LibXML;
 use Cindy::Sheet;
-#use Memoize;
-#memoize('get_doc');
+use Cindy::Log;
  
 sub get_html_doc($)
 {
@@ -323,13 +322,20 @@ A small number of additional XPath functions have been implemented.
 This returns the context node. It behaves like the identically 
 named XSLT function.
 
+=head1 ERROR HANDLING
+
+As a default Cindy dies on errors. Currently there are no warnings. 
+Cindy detects log4perl and uses it for trace logging 
+with levels DEBUG and INFO. If Cindy is used from Cindy-Apache2 the 
+apache log is used instead.
+
 =head1 AUTHOR
 
 Joachim Zobel <jz-2008@heute-morgen.de> 
 
 =head1 SEE ALSO
 
-See Cindy/Sheet.pm for the RecDescent grammar for content injection sheets.
+See Cindy/CJSGrammar.rdc for the RecDescent grammar for content injection sheets.
 
 If you prefer a classic push template engine, that uses an API to fill the template
 from within the application see  L<http://search.cpan.org/~tomita/Template-Semantic>.

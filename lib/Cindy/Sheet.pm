@@ -1,5 +1,5 @@
-# $Id: Sheet.pm 107 2011-04-18 17:42:42Z jo $
-# Cindy::Sheet - Parsing Conten Injection Sheets
+# $Id: Sheet.pm 120 2013-01-31 11:34:41Z jo $
+# Cindy::Sheet - Parsing Content Injection Sheets
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
 # This program is free software; you can redistribute it and/or
@@ -19,19 +19,29 @@ use Cindy::Log;
 #$::RD_WARN = 1;
 
 sub PARSER { 
-  return Cindy::CJSGrammar->new()
-  or die "Faild to create CJSGrammar.";
+  my $rtn = Cindy::CJSGrammar->new()
+  or die "Failed to create CJSGrammar.";
+  $rtn->{__error_collector} = [];
+  return $rtn;
 }
 
-sub warn_on_errors($)
+sub die_on_errors
 {
   my ($errors) = @_;
-  if ($errors and @{$errors}) {
-    foreach my $ref (@{$errors}) {
-      my ($error, $line) = @$ref;
-      Cindy::Log::WARN "line $line: $error\n";
-    }
+  if ($errors and scalar(@{$errors})) {
+    DEBUG "CJS: Dying on errors.";
+    die join("\n", map("line $_->[1]: $_->[0]", @{$errors}))."\n";
   }
+  return 0; 
+}
+
+sub collect_errors
+{
+  my ($parser) = @_;
+  my $errors = $parser->{errors};
+  DEBUG "CJS: Appending errors:"
+      . join("\n", map("line $_->[1]: $_->[0]", @{$errors}));
+  push(@{$parser->{__error_collector}}, @{$errors});
   return 0; 
 }
 
@@ -51,8 +61,9 @@ sub parse_cis($)
   my $text;
   read($CIS, $text, -s $CIS);
   close($CIS);
-  my $rtn = PARSER->complete_injection_list($text);
-  # warn_on_errors($parser->{errors});
+  my $parser = PARSER();
+  my $rtn = $parser->complete_injection_list($text);
+  die_on_errors($parser->{__error_collector});
   return $rtn;
 }
 
@@ -66,7 +77,10 @@ sub parse_cis($)
 #
 sub parse_cis_string($)
 {
-  return PARSER->complete_injection_list($_[0]);
+  my $parser = PARSER();
+  my $rtn = $parser->complete_injection_list($_[0]);
+  die_on_errors($parser->{__error_collector});
+  return $rtn;
 }
 
 1;

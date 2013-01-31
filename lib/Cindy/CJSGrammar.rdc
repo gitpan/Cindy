@@ -1,4 +1,4 @@
-# $Id: CJSGrammar.rdc 115 2011-04-28 16:28:51Z jo $
+# $Id: CJSGrammar.rdc 120 2013-01-31 11:34:41Z jo $
 # The ParseRecDescent grammar used for CJS sheets.
 # This is used to generate CJSGrammar.pm and 
 # is distributed as documentation. The CJSGrammar.pm is 
@@ -35,7 +35,7 @@ injection: xpath repeat <commit> xpath condition(?) sublist
 # No matches (uncommit to try the resync rule below) 
 injection: <error> 
 # resume parsing after the next separator and output the error
-injection: /[^;]+;[^\n]*\n?/ warn
+injection: /[^;]+;[^\n]*\n?/ errout
 
 # The rest of the line after a ; is ignored
 # Note that // is not a usable comment delimiter with XPath expressions
@@ -44,7 +44,7 @@ separator: comment(s)
 separator: ..."}"
 separator: .../\Z/
 separator: <error:Expected ";" but found  "}.($text=~/(.*)\n/,$1).qq{" instead.>
-separator: /[^;]+;[^\n]*\n?/ warn
+separator: /[^;]+;[^\n]*\n?/ errout
 
 # Switch between selectors
 usage: comment(s?) "use" selector separator 
@@ -65,9 +65,9 @@ sublist: "{" <commit> sub_injection_list "}" {$item[3];}
 # Main injection list
 injection_list: full_injection(s) {[grep($_, @{$item[1]})];} 
 complete_injection_list: usage injection_list /\Z/ {$item{injection_list};}
-complete_injection_list: <error> | warn
+complete_injection_list: <error> | errout
 
 # output error action
-warn: {Cindy::Sheet::warn_on_errors($thisparser->{errors});}
+errout: {Cindy::Sheet::collect_errors($thisparser);} 
 
 

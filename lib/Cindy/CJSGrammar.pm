@@ -1,6 +1,5 @@
 package Cindy::CJSGrammar;
 use Parse::RecDescent;
-
 { my $ERRORS;
 
 
@@ -18,13 +17,14 @@ local $SIG{__WARN__} = sub {0};
 *Parse::RecDescent::Cindy::CJSGrammar::AUTOLOAD   = sub
 {
     no strict 'refs';
-    $AUTOLOAD =~ s/^Parse::RecDescent::Cindy::CJSGrammar/Parse::RecDescent/;
-    goto &{$AUTOLOAD};
+
+    ${"AUTOLOAD"} =~ s/^Parse::RecDescent::Cindy::CJSGrammar/Parse::RecDescent/;
+    goto &{${"AUTOLOAD"}};
 }
 }
 
 push @Parse::RecDescent::Cindy::CJSGrammar::ISA, 'Parse::RecDescent';
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args, $_itempos)
 sub Parse::RecDescent::Cindy::CJSGrammar::full_injection
 {
 	my $thisparser = $_[0];
@@ -32,7 +32,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::full_injection
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"full_injection"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [full_injection]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{full_injection},
@@ -50,12 +50,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::full_injection
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
     my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $_itempos = $_[5];
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{injection});
     $expectation->at($_[1]);
@@ -88,7 +89,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::full_injection
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::injection($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::injection($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [injection]>>},
@@ -101,7 +102,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::full_injection
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [injection]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{full_injection},
                       $tracelevel)
@@ -118,7 +119,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::full_injection
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{separator})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::separator($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::separator($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [separator]>>},
@@ -131,7 +132,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::full_injection
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [separator]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{full_injection},
                       $tracelevel)
@@ -163,12 +164,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::full_injection
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [injection separator]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{full_injection},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -203,7 +206,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::full_injection
                       q{full_injection},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{full_injection},
                       $tracelevel)
@@ -212,7 +215,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::full_injection
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args, $_itempos)
 sub Parse::RecDescent::Cindy::CJSGrammar::atname
 {
 	my $thisparser = $_[0];
@@ -220,7 +223,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::atname
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"atname"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [atname]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{atname},
@@ -238,12 +241,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::atname
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
     my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $_itempos = $_[5];
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/\\w[\\w\\d.:-]*/});
     $expectation->at($_[1]);
@@ -273,13 +277,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::atname
                       q{atname},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:\w[\w\d.:-]*)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -287,7 +291,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::atname
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -296,12 +300,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::atname
         push @item, $item{__PATTERN1__}=$current_match;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/\\w[\\w\\d.:-]*/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{atname},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -336,7 +342,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::atname
                       q{atname},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{atname},
                       $tracelevel)
@@ -345,7 +351,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::atname
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args, $_itempos)
 sub Parse::RecDescent::Cindy::CJSGrammar::injection_list
 {
 	my $thisparser = $_[0];
@@ -353,7 +359,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection_list
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"injection_list"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [injection_list]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{injection_list},
@@ -371,12 +377,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection_list
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
     my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $_itempos = $_[5];
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{full_injection});
     $expectation->at($_[1]);
@@ -409,7 +416,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection_list
                     if defined $::RD_TRACE;
         $expectation->is(q{})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::Cindy::CJSGrammar::full_injection, 1, 100000000, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::Cindy::CJSGrammar::full_injection, 1, 100000000, $_noactions,$expectation,sub { \@arg },undef)))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [full_injection]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -420,7 +427,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection_list
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [full_injection]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{injection_list},
                       $tracelevel)
@@ -452,12 +459,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection_list
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [full_injection]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{injection_list},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -492,7 +501,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection_list
                       q{injection_list},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{injection_list},
                       $tracelevel)
@@ -501,7 +510,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection_list
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args, $_itempos)
 sub Parse::RecDescent::Cindy::CJSGrammar::sub_injection_list
 {
 	my $thisparser = $_[0];
@@ -509,7 +518,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sub_injection_list
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"sub_injection_list"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [sub_injection_list]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{sub_injection_list},
@@ -527,12 +536,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sub_injection_list
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
     my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $_itempos = $_[5];
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{sub_injection});
     $expectation->at($_[1]);
@@ -565,7 +575,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sub_injection_list
                     if defined $::RD_TRACE;
         $expectation->is(q{})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::Cindy::CJSGrammar::sub_injection, 1, 100000000, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::Cindy::CJSGrammar::sub_injection, 1, 100000000, $_noactions,$expectation,sub { \@arg },undef)))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [sub_injection]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -576,7 +586,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sub_injection_list
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [sub_injection]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{sub_injection_list},
                       $tracelevel)
@@ -608,12 +618,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sub_injection_list
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [sub_injection]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{sub_injection_list},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -648,7 +660,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sub_injection_list
                       q{sub_injection_list},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{sub_injection_list},
                       $tracelevel)
@@ -657,7 +669,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sub_injection_list
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args, $_itempos)
 sub Parse::RecDescent::Cindy::CJSGrammar::attribute
 {
 	my $thisparser = $_[0];
@@ -665,7 +677,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::attribute
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"attribute"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [attribute]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{attribute},
@@ -683,12 +695,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::attribute
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
     my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $_itempos = $_[5];
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/attribute/});
     $expectation->at($_[1]);
@@ -718,13 +731,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::attribute
                       q{attribute},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:attribute)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -732,7 +745,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::attribute
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -741,12 +754,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::attribute
         push @item, $item{__PATTERN1__}=$current_match;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/attribute/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{attribute},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -781,7 +796,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::attribute
                       q{attribute},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{attribute},
                       $tracelevel)
@@ -790,135 +805,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::attribute
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
-sub Parse::RecDescent::Cindy::CJSGrammar::warn
-{
-	my $thisparser = $_[0];
-	use vars q{$tracelevel};
-	local $tracelevel = ($tracelevel||0)+1;
-	$ERRORS = 0;
-    my $thisrule = $thisparser->{"rules"}{"warn"};
-    
-    Parse::RecDescent::_trace(q{Trying rule: [warn]},
-                  Parse::RecDescent::_tracefirst($_[1]),
-                  q{warn},
-                  $tracelevel)
-                    if defined $::RD_TRACE;
-
-    
-    my $err_at = @{$thisparser->{errors}};
-
-    my $score;
-    my $score_return;
-    my $_tok;
-    my $return = undef;
-    my $_matched=0;
-    my $commit=0;
-    my @item = ();
-    my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
-    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
-    my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
-    my $text;
-    my $lastsep="";
-    my $current_match;
-    my $expectation = new Parse::RecDescent::Expectation(q{});
-    $expectation->at($_[1]);
-    
-    my $thisline;
-    tie $thisline, q{Parse::RecDescent::LineCounter}, \$text, $thisparser;
-
-    
-
-    while (!$_matched && !$commit)
-    {
-        
-        Parse::RecDescent::_trace(q{Trying production: []},
-                      Parse::RecDescent::_tracefirst($_[1]),
-                      q{warn},
-                      $tracelevel)
-                        if defined $::RD_TRACE;
-        my $thisprod = $thisrule->{"prods"}[0];
-        $text = $_[1];
-        my $_savetext;
-        @item = (q{warn});
-        %item = (__RULE__ => q{warn});
-        my $repcount = 0;
-
-
-        Parse::RecDescent::_trace(q{Trying action},
-                      Parse::RecDescent::_tracefirst($text),
-                      q{warn},
-                      $tracelevel)
-                        if defined $::RD_TRACE;
-        
-
-        $_tok = ($_noactions) ? 0 : do {Cindy::Sheet::warn_on_errors($thisparser->{errors});};
-        unless (defined $_tok)
-        {
-            Parse::RecDescent::_trace(q{<<Didn't match action>> (return value: [undef])})
-                    if defined $::RD_TRACE;
-            last;
-        }
-        Parse::RecDescent::_trace(q{>>Matched action<< (return value: [}
-                      . $_tok . q{])},
-                      Parse::RecDescent::_tracefirst($text))
-                        if defined $::RD_TRACE;
-        push @item, $_tok;
-        $item{__ACTION1__}=$_tok;
-        
-
-
-        Parse::RecDescent::_trace(q{>>Matched production: []<<},
-                      Parse::RecDescent::_tracefirst($text),
-                      q{warn},
-                      $tracelevel)
-                        if defined $::RD_TRACE;
-        $_matched = 1;
-        last;
-    }
-
-
-    unless ( $_matched || defined($score) )
-    {
-        
-
-        $_[1] = $text;  # NOT SURE THIS IS NEEDED
-        Parse::RecDescent::_trace(q{<<Didn't match rule>>},
-                     Parse::RecDescent::_tracefirst($_[1]),
-                     q{warn},
-                     $tracelevel)
-                    if defined $::RD_TRACE;
-        return undef;
-    }
-    if (!defined($return) && defined($score))
-    {
-        Parse::RecDescent::_trace(q{>>Accepted scored production<<}, "",
-                      q{warn},
-                      $tracelevel)
-                        if defined $::RD_TRACE;
-        $return = $score_return;
-    }
-    splice @{$thisparser->{errors}}, $err_at;
-    $return = $item[$#item] unless defined $return;
-    if (defined $::RD_TRACE)
-    {
-        Parse::RecDescent::_trace(q{>>Matched rule<< (return value: [} .
-                      $return . q{])}, "",
-                      q{warn},
-                      $tracelevel);
-        Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
-                      Parse::RecDescent::_tracefirst($text),
-                      , q{warn},
-                      $tracelevel)
-    }
-    $_[1] = $text;
-    return $return;
-}
-
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args, $_itempos)
 sub Parse::RecDescent::Cindy::CJSGrammar::injection
 {
 	my $thisparser = $_[0];
@@ -926,7 +813,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"injection"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [injection]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{injection},
@@ -944,12 +831,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
     my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $_itempos = $_[5];
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/\\s*;/, or xpath, or /[^;]+;[^\\n]*\\n?/});
     $expectation->at($_[1]);
@@ -979,7 +867,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
                       q{injection},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         $_savetext = $text;
 
@@ -993,7 +881,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -1024,12 +912,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/\\s*;/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{injection},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -1058,7 +948,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::xpath($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::xpath($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpath]>>},
@@ -1071,7 +961,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpath]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{injection},
                       $tracelevel)
@@ -1088,7 +978,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{action})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::action($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::action($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [action]>>},
@@ -1101,7 +991,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [action]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{injection},
                       $tracelevel)
@@ -1144,7 +1034,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{xpath})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::xpath($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::xpath($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpath]>>},
@@ -1157,7 +1047,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpath]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{injection},
                       $tracelevel)
@@ -1189,12 +1079,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [xpath action <commit> xpath]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{injection},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -1223,7 +1115,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::xpath($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::xpath($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpath]>>},
@@ -1236,7 +1128,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpath]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{injection},
                       $tracelevel)
@@ -1253,7 +1145,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{attribute})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::attribute($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::attribute($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [attribute]>>},
@@ -1266,7 +1158,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [attribute]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{injection},
                       $tracelevel)
@@ -1309,7 +1201,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{xpath})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::xpath($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::xpath($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpath]>>},
@@ -1322,7 +1214,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpath]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{injection},
                       $tracelevel)
@@ -1339,7 +1231,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{atname})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::atname($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::atname($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [atname]>>},
@@ -1352,7 +1244,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [atname]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{injection},
                       $tracelevel)
@@ -1385,12 +1277,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [xpath attribute <commit> xpath atname]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{injection},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -1419,7 +1313,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::xpath($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::xpath($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpath]>>},
@@ -1432,7 +1326,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpath]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{injection},
                       $tracelevel)
@@ -1449,7 +1343,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{repeat})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::repeat($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::repeat($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [repeat]>>},
@@ -1462,7 +1356,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [repeat]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{injection},
                       $tracelevel)
@@ -1505,7 +1399,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{xpath})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::xpath($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::xpath($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpath]>>},
@@ -1518,7 +1412,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpath]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{injection},
                       $tracelevel)
@@ -1535,7 +1429,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
                     if defined $::RD_TRACE;
         $expectation->is(q{condition})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::Cindy::CJSGrammar::condition, 0, 1, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::Cindy::CJSGrammar::condition, 0, 1, $_noactions,$expectation,sub { \@arg },undef)))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [condition]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -1546,7 +1440,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [condition]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{injection},
                       $tracelevel)
@@ -1563,7 +1457,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{sublist})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::sublist($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::sublist($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [sublist]>>},
@@ -1576,7 +1470,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [sublist]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{injection},
                       $tracelevel)
@@ -1610,12 +1504,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [xpath repeat <commit> xpath condition sublist]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{injection},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -1668,12 +1564,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
         push @item, $item{__DIRECTIVE1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [<error...>]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{injection},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -1682,7 +1580,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
     while (!$_matched && !$commit)
     {
         
-        Parse::RecDescent::_trace(q{Trying production: [/[^;]+;[^\\n]*\\n?/ warn]},
+        Parse::RecDescent::_trace(q{Trying production: [/[^;]+;[^\\n]*\\n?/ errout]},
                       Parse::RecDescent::_tracefirst($_[1]),
                       q{injection},
                       $tracelevel)
@@ -1699,13 +1597,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
                       q{injection},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:[^;]+;[^\n]*\n?)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -1713,7 +1611,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -1722,17 +1620,17 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
         push @item, $item{__PATTERN1__}=$current_match;
         
 
-        Parse::RecDescent::_trace(q{Trying subrule: [warn]},
+        Parse::RecDescent::_trace(q{Trying subrule: [errout]},
                   Parse::RecDescent::_tracefirst($text),
                   q{injection},
                   $tracelevel)
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
-        $expectation->is(q{warn})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::warn($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        $expectation->is(q{errout})->at($text);
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::errout($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
-            Parse::RecDescent::_trace(q{<<Didn't match subrule: [warn]>>},
+            Parse::RecDescent::_trace(q{<<Didn't match subrule: [errout]>>},
                           Parse::RecDescent::_tracefirst($text),
                           q{injection},
                           $tracelevel)
@@ -1740,24 +1638,26 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
             $expectation->failed();
             last;
         }
-        Parse::RecDescent::_trace(q{>>Matched subrule: [warn]<< (return value: [}
+        Parse::RecDescent::_trace(q{>>Matched subrule: [errout]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{injection},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $item{q{warn}} = $_tok;
+        $item{q{errout}} = $_tok;
         push @item, $_tok;
         
         }
 
-
-        Parse::RecDescent::_trace(q{>>Matched production: [/[^;]+;[^\\n]*\\n?/ warn]<<},
+        Parse::RecDescent::_trace(q{>>Matched production: [/[^;]+;[^\\n]*\\n?/ errout]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{injection},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -1792,7 +1692,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
                       q{injection},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{injection},
                       $tracelevel)
@@ -1801,7 +1701,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::injection
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args, $_itempos)
 sub Parse::RecDescent::Cindy::CJSGrammar::complete_injection_list
 {
 	my $thisparser = $_[0];
@@ -1809,7 +1709,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::complete_injection_list
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"complete_injection_list"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [complete_injection_list]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{complete_injection_list},
@@ -1827,14 +1727,15 @@ sub Parse::RecDescent::Cindy::CJSGrammar::complete_injection_list
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
     my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $_itempos = $_[5];
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
-    my $expectation = new Parse::RecDescent::Expectation(q{usage, or warn});
+    my $expectation = new Parse::RecDescent::Expectation(q{usage, or errout});
     $expectation->at($_[1]);
     
     my $thisline;
@@ -1865,7 +1766,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::complete_injection_list
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::usage($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::usage($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [usage]>>},
@@ -1878,7 +1779,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::complete_injection_list
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [usage]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{complete_injection_list},
                       $tracelevel)
@@ -1895,7 +1796,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::complete_injection_list
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{injection_list})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::injection_list($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::injection_list($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [injection_list]>>},
@@ -1908,7 +1809,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::complete_injection_list
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [injection_list]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{complete_injection_list},
                       $tracelevel)
@@ -1922,13 +1823,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::complete_injection_list
                       q{complete_injection_list},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{/\\Z/})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:\Z)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -1936,7 +1837,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::complete_injection_list
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -1967,12 +1868,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::complete_injection_list
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [usage injection_list /\\Z/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{complete_injection_list},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -2025,12 +1928,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::complete_injection_list
         push @item, $item{__DIRECTIVE1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [<error...>]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{complete_injection_list},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -2039,7 +1944,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::complete_injection_list
     while (!$_matched && !$commit)
     {
         
-        Parse::RecDescent::_trace(q{Trying production: [warn]},
+        Parse::RecDescent::_trace(q{Trying production: [errout]},
                       Parse::RecDescent::_tracefirst($_[1]),
                       q{complete_injection_list},
                       $tracelevel)
@@ -2052,17 +1957,17 @@ sub Parse::RecDescent::Cindy::CJSGrammar::complete_injection_list
         my $repcount = 0;
 
 
-        Parse::RecDescent::_trace(q{Trying subrule: [warn]},
+        Parse::RecDescent::_trace(q{Trying subrule: [errout]},
                   Parse::RecDescent::_tracefirst($text),
                   q{complete_injection_list},
                   $tracelevel)
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::warn($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::errout($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
-            Parse::RecDescent::_trace(q{<<Didn't match subrule: [warn]>>},
+            Parse::RecDescent::_trace(q{<<Didn't match subrule: [errout]>>},
                           Parse::RecDescent::_tracefirst($text),
                           q{complete_injection_list},
                           $tracelevel)
@@ -2070,24 +1975,26 @@ sub Parse::RecDescent::Cindy::CJSGrammar::complete_injection_list
             $expectation->failed();
             last;
         }
-        Parse::RecDescent::_trace(q{>>Matched subrule: [warn]<< (return value: [}
+        Parse::RecDescent::_trace(q{>>Matched subrule: [errout]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{complete_injection_list},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $item{q{warn}} = $_tok;
+        $item{q{errout}} = $_tok;
         push @item, $_tok;
         
         }
 
-
-        Parse::RecDescent::_trace(q{>>Matched production: [warn]<<},
+        Parse::RecDescent::_trace(q{>>Matched production: [errout]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{complete_injection_list},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -2122,7 +2029,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::complete_injection_list
                       q{complete_injection_list},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{complete_injection_list},
                       $tracelevel)
@@ -2131,7 +2038,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::complete_injection_list
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args, $_itempos)
 sub Parse::RecDescent::Cindy::CJSGrammar::usage
 {
 	my $thisparser = $_[0];
@@ -2139,7 +2046,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::usage
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"usage"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [usage]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{usage},
@@ -2157,12 +2064,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::usage
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
     my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $_itempos = $_[5];
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{comment});
     $expectation->at($_[1]);
@@ -2195,7 +2103,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::usage
                     if defined $::RD_TRACE;
         $expectation->is(q{})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::Cindy::CJSGrammar::comment, 0, 100000000, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::Cindy::CJSGrammar::comment, 0, 100000000, $_noactions,$expectation,sub { \@arg },undef)))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [comment]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -2206,7 +2114,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::usage
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [comment]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{usage},
                       $tracelevel)
@@ -2221,7 +2129,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::usage
                       q{usage},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{'use'})->at($text);
         
 
@@ -2230,6 +2138,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::usage
              do { substr($text,0,length($_tok)) = ""; 1; }
         )
         {
+            $text = $lastsep . $text if defined $lastsep;
             
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
@@ -2251,7 +2160,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::usage
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{selector})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::selector($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::selector($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [selector]>>},
@@ -2264,7 +2173,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::usage
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [selector]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{usage},
                       $tracelevel)
@@ -2281,7 +2190,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::usage
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{separator})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::separator($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::separator($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [separator]>>},
@@ -2294,7 +2203,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::usage
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [separator]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{usage},
                       $tracelevel)
@@ -2326,12 +2235,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::usage
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [comment 'use' selector separator]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{usage},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -2360,7 +2271,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::usage
                     if defined $::RD_TRACE;
         $expectation->is(q{})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::Cindy::CJSGrammar::comment, 0, 100000000, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::Cindy::CJSGrammar::comment, 0, 100000000, $_noactions,$expectation,sub { \@arg },undef)))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [comment]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -2371,7 +2282,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::usage
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [comment]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{usage},
                       $tracelevel)
@@ -2403,12 +2314,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::usage
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [comment]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{usage},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -2443,7 +2356,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::usage
                       q{usage},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{usage},
                       $tracelevel)
@@ -2452,7 +2365,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::usage
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args, $_itempos)
 sub Parse::RecDescent::Cindy::CJSGrammar::selector
 {
 	my $thisparser = $_[0];
@@ -2460,7 +2373,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::selector
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"selector"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [selector]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{selector},
@@ -2478,12 +2391,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::selector
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
     my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $_itempos = $_[5];
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/css|xpath/});
     $expectation->at($_[1]);
@@ -2513,13 +2427,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::selector
                       q{selector},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:css|xpath)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -2527,7 +2441,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::selector
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -2536,12 +2450,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::selector
         push @item, $item{__PATTERN1__}=$current_match;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/css|xpath/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{selector},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -2576,7 +2492,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::selector
                       q{selector},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{selector},
                       $tracelevel)
@@ -2585,7 +2501,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::selector
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args, $_itempos)
 sub Parse::RecDescent::Cindy::CJSGrammar::sublist
 {
 	my $thisparser = $_[0];
@@ -2593,7 +2509,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sublist
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"sublist"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [sublist]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{sublist},
@@ -2611,12 +2527,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sublist
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
     my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $_itempos = $_[5];
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{'\{'});
     $expectation->at($_[1]);
@@ -2647,7 +2564,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sublist
                       q{sublist},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
@@ -2656,6 +2573,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sublist
              do { substr($text,0,length($_tok)) = ""; 1; }
         )
         {
+            $text = $lastsep . $text if defined $lastsep;
             
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
@@ -2703,7 +2621,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sublist
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{sub_injection_list})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::sub_injection_list($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::sub_injection_list($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [sub_injection_list]>>},
@@ -2716,7 +2634,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sublist
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [sub_injection_list]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{sublist},
                       $tracelevel)
@@ -2731,7 +2649,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sublist
                       q{sublist},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{'\}'})->at($text);
         
 
@@ -2740,6 +2658,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sublist
              do { substr($text,0,length($_tok)) = ""; 1; }
         )
         {
+            $text = $lastsep . $text if defined $lastsep;
             
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
@@ -2776,12 +2695,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sublist
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: ['\{' <commit> sub_injection_list '\}']<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{sublist},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -2816,7 +2737,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sublist
                       q{sublist},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{sublist},
                       $tracelevel)
@@ -2825,7 +2746,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sublist
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args, $_itempos)
 sub Parse::RecDescent::Cindy::CJSGrammar::xpath
 {
 	my $thisparser = $_[0];
@@ -2833,7 +2754,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::xpath
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"xpath"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [xpath]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{xpath},
@@ -2851,12 +2772,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::xpath
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
     my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $_itempos = $_[5];
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/\\"[^\\"]+\\"/, or /\\S+/});
     $expectation->at($_[1]);
@@ -2886,13 +2808,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::xpath
                       q{xpath},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:\"[^\"]+\")/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -2900,7 +2822,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::xpath
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -2931,12 +2853,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::xpath
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/\\"[^\\"]+\\"/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{xpath},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -2962,13 +2886,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::xpath
                       q{xpath},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:\S+)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -2976,7 +2900,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::xpath
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -2985,12 +2909,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::xpath
         push @item, $item{__PATTERN1__}=$current_match;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/\\S+/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{xpath},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -3025,7 +2951,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::xpath
                       q{xpath},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{xpath},
                       $tracelevel)
@@ -3034,7 +2960,138 @@ sub Parse::RecDescent::Cindy::CJSGrammar::xpath
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args, $_itempos)
+sub Parse::RecDescent::Cindy::CJSGrammar::errout
+{
+	my $thisparser = $_[0];
+	use vars q{$tracelevel};
+	local $tracelevel = ($tracelevel||0)+1;
+	$ERRORS = 0;
+    my $thisrule = $thisparser->{"rules"}{"errout"};
+
+    Parse::RecDescent::_trace(q{Trying rule: [errout]},
+                  Parse::RecDescent::_tracefirst($_[1]),
+                  q{errout},
+                  $tracelevel)
+                    if defined $::RD_TRACE;
+
+    
+    my $err_at = @{$thisparser->{errors}};
+
+    my $score;
+    my $score_return;
+    my $_tok;
+    my $return = undef;
+    my $_matched=0;
+    my $commit=0;
+    my @item = ();
+    my %item = ();
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
+    my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $_itempos = $_[5];
+    my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
+    my $text;
+    my $lastsep;
+    my $current_match;
+    my $expectation = new Parse::RecDescent::Expectation(q{});
+    $expectation->at($_[1]);
+    
+    my $thisline;
+    tie $thisline, q{Parse::RecDescent::LineCounter}, \$text, $thisparser;
+
+    
+
+    while (!$_matched && !$commit)
+    {
+        
+        Parse::RecDescent::_trace(q{Trying production: []},
+                      Parse::RecDescent::_tracefirst($_[1]),
+                      q{errout},
+                      $tracelevel)
+                        if defined $::RD_TRACE;
+        my $thisprod = $thisrule->{"prods"}[0];
+        $text = $_[1];
+        my $_savetext;
+        @item = (q{errout});
+        %item = (__RULE__ => q{errout});
+        my $repcount = 0;
+
+
+        Parse::RecDescent::_trace(q{Trying action},
+                      Parse::RecDescent::_tracefirst($text),
+                      q{errout},
+                      $tracelevel)
+                        if defined $::RD_TRACE;
+        
+
+        $_tok = ($_noactions) ? 0 : do {Cindy::Sheet::collect_errors($thisparser);};
+        unless (defined $_tok)
+        {
+            Parse::RecDescent::_trace(q{<<Didn't match action>> (return value: [undef])})
+                    if defined $::RD_TRACE;
+            last;
+        }
+        Parse::RecDescent::_trace(q{>>Matched action<< (return value: [}
+                      . $_tok . q{])},
+                      Parse::RecDescent::_tracefirst($text))
+                        if defined $::RD_TRACE;
+        push @item, $_tok;
+        $item{__ACTION1__}=$_tok;
+        
+
+        Parse::RecDescent::_trace(q{>>Matched production: []<<},
+                      Parse::RecDescent::_tracefirst($text),
+                      q{errout},
+                      $tracelevel)
+                        if defined $::RD_TRACE;
+
+
+
+        $_matched = 1;
+        last;
+    }
+
+
+    unless ( $_matched || defined($score) )
+    {
+        
+
+        $_[1] = $text;  # NOT SURE THIS IS NEEDED
+        Parse::RecDescent::_trace(q{<<Didn't match rule>>},
+                     Parse::RecDescent::_tracefirst($_[1]),
+                     q{errout},
+                     $tracelevel)
+                    if defined $::RD_TRACE;
+        return undef;
+    }
+    if (!defined($return) && defined($score))
+    {
+        Parse::RecDescent::_trace(q{>>Accepted scored production<<}, "",
+                      q{errout},
+                      $tracelevel)
+                        if defined $::RD_TRACE;
+        $return = $score_return;
+    }
+    splice @{$thisparser->{errors}}, $err_at;
+    $return = $item[$#item] unless defined $return;
+    if (defined $::RD_TRACE)
+    {
+        Parse::RecDescent::_trace(q{>>Matched rule<< (return value: [} .
+                      $return . q{])}, "",
+                      q{errout},
+                      $tracelevel);
+        Parse::RecDescent::_trace(q{(consumed: [} .
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
+                      Parse::RecDescent::_tracefirst($text),
+                      , q{errout},
+                      $tracelevel)
+    }
+    $_[1] = $text;
+    return $return;
+}
+
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args, $_itempos)
 sub Parse::RecDescent::Cindy::CJSGrammar::comment
 {
 	my $thisparser = $_[0];
@@ -3042,7 +3099,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::comment
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"comment"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [comment]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{comment},
@@ -3060,12 +3117,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::comment
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
     my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $_itempos = $_[5];
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/;/});
     $expectation->at($_[1]);
@@ -3095,13 +3153,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::comment
                       q{comment},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:;)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -3109,7 +3167,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::comment
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -3174,13 +3232,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::comment
                       q{comment},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{/\\n?/})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:\n?)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -3188,7 +3246,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::comment
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -3197,12 +3255,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::comment
         push @item, $item{__PATTERN2__}=$current_match;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/;/ <commit> <skip: qr/[^\n]*/> /\\n?/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{comment},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -3237,7 +3297,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::comment
                       q{comment},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{comment},
                       $tracelevel)
@@ -3246,7 +3306,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::comment
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args, $_itempos)
 sub Parse::RecDescent::Cindy::CJSGrammar::separator
 {
 	my $thisparser = $_[0];
@@ -3254,7 +3314,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::separator
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"separator"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [separator]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{separator},
@@ -3272,12 +3332,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::separator
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
     my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $_itempos = $_[5];
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{comment, or '\}', or /\\Z/, or /[^;]+;[^\\n]*\\n?/});
     $expectation->at($_[1]);
@@ -3310,7 +3371,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::separator
                     if defined $::RD_TRACE;
         $expectation->is(q{})->at($text);
         
-        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::Cindy::CJSGrammar::comment, 1, 100000000, $_noactions,$expectation,sub { \@arg }))) 
+        unless (defined ($_tok = $thisparser->_parserepeat($text, \&Parse::RecDescent::Cindy::CJSGrammar::comment, 1, 100000000, $_noactions,$expectation,sub { \@arg },undef)))
         {
             Parse::RecDescent::_trace(q{<<Didn't match repeated subrule: [comment]>>},
                           Parse::RecDescent::_tracefirst($text),
@@ -3321,7 +3382,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::separator
         }
         Parse::RecDescent::_trace(q{>>Matched repeated subrule: [comment]<< (}
                     . @$_tok . q{ times)},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{separator},
                       $tracelevel)
@@ -3331,12 +3392,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::separator
         
 
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [comment]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{separator},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -3363,7 +3426,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::separator
                       q{separator},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         $_savetext = $text;
 
@@ -3373,6 +3436,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::separator
         )
         {
             $text = $_savetext;
+            
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -3386,12 +3450,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::separator
         push @item, $item{__STRING1__}=$_tok;
         $text = $_savetext;
 
-
         Parse::RecDescent::_trace(q{>>Matched production: ['\}']<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{separator},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -3417,7 +3483,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::separator
                       q{separator},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         $_savetext = $text;
 
@@ -3431,7 +3497,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::separator
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -3440,12 +3506,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::separator
         push @item, $item{__PATTERN1__}=$current_match;
         $text = $_savetext;
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/\\Z/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{separator},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -3493,12 +3561,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::separator
         push @item, $item{__DIRECTIVE1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [<error...>]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{separator},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -3507,7 +3577,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::separator
     while (!$_matched && !$commit)
     {
         
-        Parse::RecDescent::_trace(q{Trying production: [/[^;]+;[^\\n]*\\n?/ warn]},
+        Parse::RecDescent::_trace(q{Trying production: [/[^;]+;[^\\n]*\\n?/ errout]},
                       Parse::RecDescent::_tracefirst($_[1]),
                       q{separator},
                       $tracelevel)
@@ -3524,13 +3594,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::separator
                       q{separator},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:[^;]+;[^\n]*\n?)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -3538,7 +3608,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::separator
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -3547,17 +3617,17 @@ sub Parse::RecDescent::Cindy::CJSGrammar::separator
         push @item, $item{__PATTERN1__}=$current_match;
         
 
-        Parse::RecDescent::_trace(q{Trying subrule: [warn]},
+        Parse::RecDescent::_trace(q{Trying subrule: [errout]},
                   Parse::RecDescent::_tracefirst($text),
                   q{separator},
                   $tracelevel)
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
-        $expectation->is(q{warn})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::warn($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        $expectation->is(q{errout})->at($text);
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::errout($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
-            Parse::RecDescent::_trace(q{<<Didn't match subrule: [warn]>>},
+            Parse::RecDescent::_trace(q{<<Didn't match subrule: [errout]>>},
                           Parse::RecDescent::_tracefirst($text),
                           q{separator},
                           $tracelevel)
@@ -3565,24 +3635,26 @@ sub Parse::RecDescent::Cindy::CJSGrammar::separator
             $expectation->failed();
             last;
         }
-        Parse::RecDescent::_trace(q{>>Matched subrule: [warn]<< (return value: [}
+        Parse::RecDescent::_trace(q{>>Matched subrule: [errout]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{separator},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $item{q{warn}} = $_tok;
+        $item{q{errout}} = $_tok;
         push @item, $_tok;
         
         }
 
-
-        Parse::RecDescent::_trace(q{>>Matched production: [/[^;]+;[^\\n]*\\n?/ warn]<<},
+        Parse::RecDescent::_trace(q{>>Matched production: [/[^;]+;[^\\n]*\\n?/ errout]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{separator},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -3617,7 +3689,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::separator
                       q{separator},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{separator},
                       $tracelevel)
@@ -3626,7 +3698,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::separator
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args, $_itempos)
 sub Parse::RecDescent::Cindy::CJSGrammar::sub_injection
 {
 	my $thisparser = $_[0];
@@ -3634,7 +3706,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sub_injection
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"sub_injection"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [sub_injection]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{sub_injection},
@@ -3652,12 +3724,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sub_injection
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
     my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $_itempos = $_[5];
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{'\}', or full_injection});
     $expectation->at($_[1]);
@@ -3688,7 +3761,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sub_injection
                       q{sub_injection},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         $_savetext = $text;
 
@@ -3698,6 +3771,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sub_injection
         )
         {
             $text = $_savetext;
+            
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -3749,12 +3823,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sub_injection
         
         last unless defined $_tok;
 
-
         Parse::RecDescent::_trace(q{>>Matched production: ['\}' <commit> <reject>]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{sub_injection},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -3783,7 +3859,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sub_injection
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::full_injection($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::full_injection($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [full_injection]>>},
@@ -3796,7 +3872,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sub_injection
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [full_injection]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{sub_injection},
                       $tracelevel)
@@ -3806,12 +3882,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sub_injection
         
         }
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [full_injection]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{sub_injection},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -3846,7 +3924,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sub_injection
                       q{sub_injection},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{sub_injection},
                       $tracelevel)
@@ -3855,7 +3933,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::sub_injection
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args, $_itempos)
 sub Parse::RecDescent::Cindy::CJSGrammar::action
 {
 	my $thisparser = $_[0];
@@ -3863,7 +3941,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::action
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"action"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [action]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{action},
@@ -3881,12 +3959,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::action
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
     my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $_itempos = $_[5];
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/content|replace|copy|omit-tag|condition|comment/});
     $expectation->at($_[1]);
@@ -3916,13 +3995,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::action
                       q{action},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:content|replace|copy|omit-tag|condition|comment)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -3930,7 +4009,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::action
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -3939,12 +4018,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::action
         push @item, $item{__PATTERN1__}=$current_match;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/content|replace|copy|omit-tag|condition|comment/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{action},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -3979,7 +4060,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::action
                       q{action},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{action},
                       $tracelevel)
@@ -3988,7 +4069,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::action
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args, $_itempos)
 sub Parse::RecDescent::Cindy::CJSGrammar::repeat
 {
 	my $thisparser = $_[0];
@@ -3996,7 +4077,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::repeat
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"repeat"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [repeat]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{repeat},
@@ -4014,12 +4095,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::repeat
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
     my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $_itempos = $_[5];
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{/repeat/});
     $expectation->at($_[1]);
@@ -4049,13 +4131,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::repeat
                       q{repeat},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{})->at($text);
         
 
         unless ($text =~ s/\A($skip)/$lastsep=$1 and ""/e and   $text =~ m/\A(?:repeat)/)
         {
-            
+            $text = $lastsep . $text if defined $lastsep;
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -4063,7 +4145,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::repeat
 
             last;
         }
-		$current_match = substr($text, $-[0], $+[0] - $-[0]);
+        $current_match = substr($text, $-[0], $+[0] - $-[0]);
         substr($text,0,length($current_match),q{});
         Parse::RecDescent::_trace(q{>>Matched terminal<< (return value: [}
                         . $current_match . q{])},
@@ -4072,12 +4154,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::repeat
         push @item, $item{__PATTERN1__}=$current_match;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [/repeat/]<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{repeat},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -4112,7 +4196,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::repeat
                       q{repeat},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{repeat},
                       $tracelevel)
@@ -4121,7 +4205,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::repeat
     return $return;
 }
 
-# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args)
+# ARGS ARE: ($parser, $text; $repeating, $_noactions, \@args, $_itempos)
 sub Parse::RecDescent::Cindy::CJSGrammar::condition
 {
 	my $thisparser = $_[0];
@@ -4129,7 +4213,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::condition
 	local $tracelevel = ($tracelevel||0)+1;
 	$ERRORS = 0;
     my $thisrule = $thisparser->{"rules"}{"condition"};
-    
+
     Parse::RecDescent::_trace(q{Trying rule: [condition]},
                   Parse::RecDescent::_tracefirst($_[1]),
                   q{condition},
@@ -4147,12 +4231,13 @@ sub Parse::RecDescent::Cindy::CJSGrammar::condition
     my $commit=0;
     my @item = ();
     my %item = ();
-    my $repeating =  defined($_[2]) && $_[2];
-    my $_noactions = defined($_[3]) && $_[3];
+    my $repeating =  $_[2];
+    my $_noactions = $_[3];
     my @arg =    defined $_[4] ? @{ &{$_[4]} } : ();
+    my $_itempos = $_[5];
     my %arg =    ($#arg & 01) ? @arg : (@arg, undef);
     my $text;
-    my $lastsep="";
+    my $lastsep;
     my $current_match;
     my $expectation = new Parse::RecDescent::Expectation(q{xpath});
     $expectation->at($_[1]);
@@ -4185,7 +4270,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::condition
                     if defined $::RD_TRACE;
         if (1) { no strict qw{refs};
         $expectation->is(q{})->at($text);
-        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::xpath($thisparser,$text,$repeating,$_noactions,sub { \@arg })))
+        unless (defined ($_tok = Parse::RecDescent::Cindy::CJSGrammar::xpath($thisparser,$text,$repeating,$_noactions,sub { \@arg },undef)))
         {
             
             Parse::RecDescent::_trace(q{<<Didn't match subrule: [xpath]>>},
@@ -4198,7 +4283,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::condition
         }
         Parse::RecDescent::_trace(q{>>Matched subrule: [xpath]<< (return value: [}
                     . $_tok . q{]},
-                      
+
                       Parse::RecDescent::_tracefirst($text),
                       q{condition},
                       $tracelevel)
@@ -4213,7 +4298,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::condition
                       q{condition},
                       $tracelevel)
                         if defined $::RD_TRACE;
-        $lastsep = "";
+        undef $lastsep;
         $expectation->is(q{'\{'})->at($text);
         $_savetext = $text;
 
@@ -4223,6 +4308,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::condition
         )
         {
             $text = $_savetext;
+            
             $expectation->failed();
             Parse::RecDescent::_trace(q{<<Didn't match terminal>>},
                           Parse::RecDescent::_tracefirst($text))
@@ -4258,12 +4344,14 @@ sub Parse::RecDescent::Cindy::CJSGrammar::condition
         $item{__ACTION1__}=$_tok;
         
 
-
         Parse::RecDescent::_trace(q{>>Matched production: [xpath '\{']<<},
                       Parse::RecDescent::_tracefirst($text),
                       q{condition},
                       $tracelevel)
                         if defined $::RD_TRACE;
+
+
+
         $_matched = 1;
         last;
     }
@@ -4298,7 +4386,7 @@ sub Parse::RecDescent::Cindy::CJSGrammar::condition
                       q{condition},
                       $tracelevel);
         Parse::RecDescent::_trace(q{(consumed: [} .
-                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])}, 
+                      Parse::RecDescent::_tracemax(substr($_[1],0,-length($text))) . q{])},
                       Parse::RecDescent::_tracefirst($text),
                       , q{condition},
                       $tracelevel)
@@ -4308,7 +4396,6 @@ sub Parse::RecDescent::Cindy::CJSGrammar::condition
 }
 }
 package Cindy::CJSGrammar; sub new { my $self = bless( {
-                 '_precompiled' => 1,
                  'localvars' => '',
                  'startcode' => '',
                  'namespace' => 'Parse::RecDescent::Cindy::CJSGrammar',
@@ -4323,7 +4410,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                            'opcount' => 0,
                                                            'prods' => [
                                                                         bless( {
-                                                                                 'number' => '0',
+                                                                                 'number' => 0,
                                                                                  'strcount' => 0,
                                                                                  'dircount' => 0,
                                                                                  'uncommit' => undef,
@@ -4368,7 +4455,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                    'opcount' => 0,
                                                    'prods' => [
                                                                 bless( {
-                                                                         'number' => '0',
+                                                                         'number' => 0,
                                                                          'strcount' => 0,
                                                                          'dircount' => 0,
                                                                          'uncommit' => undef,
@@ -4403,7 +4490,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                            'opcount' => 0,
                                                            'prods' => [
                                                                         bless( {
-                                                                                 'number' => '0',
+                                                                                 'number' => 0,
                                                                                  'strcount' => 0,
                                                                                  'dircount' => 0,
                                                                                  'uncommit' => undef,
@@ -4445,7 +4532,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                'opcount' => 0,
                                                                'prods' => [
                                                                             bless( {
-                                                                                     'number' => '0',
+                                                                                     'number' => 0,
                                                                                      'strcount' => 0,
                                                                                      'dircount' => 0,
                                                                                      'uncommit' => undef,
@@ -4485,7 +4572,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                       'opcount' => 0,
                                                       'prods' => [
                                                                    bless( {
-                                                                            'number' => '0',
+                                                                            'number' => 0,
                                                                             'strcount' => 0,
                                                                             'dircount' => 0,
                                                                             'uncommit' => undef,
@@ -4511,35 +4598,6 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                       'vars' => '',
                                                       'line' => 17
                                                     }, 'Parse::RecDescent::Rule' ),
-                              'warn' => bless( {
-                                                 'impcount' => 0,
-                                                 'calls' => [],
-                                                 'changed' => 0,
-                                                 'opcount' => 0,
-                                                 'prods' => [
-                                                              bless( {
-                                                                       'number' => '0',
-                                                                       'strcount' => 0,
-                                                                       'dircount' => 0,
-                                                                       'uncommit' => undef,
-                                                                       'error' => undef,
-                                                                       'patcount' => 0,
-                                                                       'actcount' => 1,
-                                                                       'items' => [
-                                                                                    bless( {
-                                                                                             'hashname' => '__ACTION1__',
-                                                                                             'lookahead' => 0,
-                                                                                             'line' => 71,
-                                                                                             'code' => '{Cindy::Sheet::warn_on_errors($thisparser->{errors});}'
-                                                                                           }, 'Parse::RecDescent::Action' )
-                                                                                  ],
-                                                                       'line' => undef
-                                                                     }, 'Parse::RecDescent::Production' )
-                                                            ],
-                                                 'name' => 'warn',
-                                                 'vars' => '',
-                                                 'line' => 70
-                                               }, 'Parse::RecDescent::Rule' ),
                               'injection' => bless( {
                                                       'impcount' => 0,
                                                       'calls' => [
@@ -4550,13 +4608,13 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                    'repeat',
                                                                    'condition',
                                                                    'sublist',
-                                                                   'warn'
+                                                                   'errout'
                                                                  ],
                                                       'changed' => 0,
                                                       'opcount' => 0,
                                                       'prods' => [
                                                                    bless( {
-                                                                            'number' => '0',
+                                                                            'number' => 0,
                                                                             'strcount' => 0,
                                                                             'dircount' => 0,
                                                                             'uncommit' => undef,
@@ -4584,7 +4642,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                             'line' => undef
                                                                           }, 'Parse::RecDescent::Production' ),
                                                                    bless( {
-                                                                            'number' => '1',
+                                                                            'number' => 1,
                                                                             'strcount' => 0,
                                                                             'dircount' => 1,
                                                                             'uncommit' => undef,
@@ -4633,7 +4691,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                             'line' => undef
                                                                           }, 'Parse::RecDescent::Production' ),
                                                                    bless( {
-                                                                            'number' => '2',
+                                                                            'number' => 2,
                                                                             'strcount' => 0,
                                                                             'dircount' => 1,
                                                                             'uncommit' => undef,
@@ -4691,7 +4749,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                             'line' => undef
                                                                           }, 'Parse::RecDescent::Production' ),
                                                                    bless( {
-                                                                            'number' => '3',
+                                                                            'number' => 3,
                                                                             'strcount' => 0,
                                                                             'dircount' => 1,
                                                                             'uncommit' => undef,
@@ -4761,7 +4819,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                             'line' => undef
                                                                           }, 'Parse::RecDescent::Production' ),
                                                                    bless( {
-                                                                            'number' => '4',
+                                                                            'number' => 4,
                                                                             'strcount' => 0,
                                                                             'dircount' => 1,
                                                                             'uncommit' => undef,
@@ -4780,7 +4838,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                             'line' => undef
                                                                           }, 'Parse::RecDescent::Production' ),
                                                                    bless( {
-                                                                            'number' => '5',
+                                                                            'number' => 5,
                                                                             'strcount' => 0,
                                                                             'dircount' => 0,
                                                                             'uncommit' => undef,
@@ -4799,7 +4857,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                                                   'ldelim' => '/'
                                                                                                 }, 'Parse::RecDescent::Token' ),
                                                                                          bless( {
-                                                                                                  'subrule' => 'warn',
+                                                                                                  'subrule' => 'errout',
                                                                                                   'matchrule' => 0,
                                                                                                   'implicit' => undef,
                                                                                                   'argcode' => undef,
@@ -4819,13 +4877,13 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                     'calls' => [
                                                                                  'usage',
                                                                                  'injection_list',
-                                                                                 'warn'
+                                                                                 'errout'
                                                                                ],
                                                                     'changed' => 0,
                                                                     'opcount' => 0,
                                                                     'prods' => [
                                                                                  bless( {
-                                                                                          'number' => '0',
+                                                                                          'number' => 0,
                                                                                           'strcount' => 0,
                                                                                           'dircount' => 0,
                                                                                           'uncommit' => undef,
@@ -4869,7 +4927,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                                           'line' => undef
                                                                                         }, 'Parse::RecDescent::Production' ),
                                                                                  bless( {
-                                                                                          'number' => '1',
+                                                                                          'number' => 1,
                                                                                           'strcount' => 0,
                                                                                           'dircount' => 1,
                                                                                           'uncommit' => undef,
@@ -4888,7 +4946,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                                           'line' => undef
                                                                                         }, 'Parse::RecDescent::Production' ),
                                                                                  bless( {
-                                                                                          'number' => '2',
+                                                                                          'number' => 2,
                                                                                           'strcount' => 0,
                                                                                           'dircount' => 0,
                                                                                           'uncommit' => undef,
@@ -4897,7 +4955,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                                           'actcount' => 0,
                                                                                           'items' => [
                                                                                                        bless( {
-                                                                                                                'subrule' => 'warn',
+                                                                                                                'subrule' => 'errout',
                                                                                                                 'matchrule' => 0,
                                                                                                                 'implicit' => undef,
                                                                                                                 'argcode' => undef,
@@ -4923,7 +4981,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                   'opcount' => 0,
                                                   'prods' => [
                                                                bless( {
-                                                                        'number' => '0',
+                                                                        'number' => 0,
                                                                         'strcount' => 1,
                                                                         'dircount' => 0,
                                                                         'uncommit' => undef,
@@ -4975,7 +5033,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                         'line' => undef
                                                                       }, 'Parse::RecDescent::Production' ),
                                                                bless( {
-                                                                        'number' => '1',
+                                                                        'number' => 1,
                                                                         'strcount' => 0,
                                                                         'dircount' => 0,
                                                                         'uncommit' => undef,
@@ -5015,7 +5073,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                      'opcount' => 0,
                                                      'prods' => [
                                                                   bless( {
-                                                                           'number' => '0',
+                                                                           'number' => 0,
                                                                            'strcount' => 0,
                                                                            'dircount' => 0,
                                                                            'uncommit' => undef,
@@ -5050,7 +5108,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                     'opcount' => 0,
                                                     'prods' => [
                                                                  bless( {
-                                                                          'number' => '0',
+                                                                          'number' => 0,
                                                                           'strcount' => 2,
                                                                           'dircount' => 1,
                                                                           'uncommit' => undef,
@@ -5108,7 +5166,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                   'opcount' => 0,
                                                   'prods' => [
                                                                bless( {
-                                                                        'number' => '0',
+                                                                        'number' => 0,
                                                                         'strcount' => 0,
                                                                         'dircount' => 0,
                                                                         'uncommit' => undef,
@@ -5136,7 +5194,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                         'line' => undef
                                                                       }, 'Parse::RecDescent::Production' ),
                                                                bless( {
-                                                                        'number' => '1',
+                                                                        'number' => 1,
                                                                         'strcount' => 0,
                                                                         'dircount' => 0,
                                                                         'uncommit' => undef,
@@ -5162,6 +5220,35 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                   'vars' => '',
                                                   'line' => 11
                                                 }, 'Parse::RecDescent::Rule' ),
+                              'errout' => bless( {
+                                                   'impcount' => 0,
+                                                   'calls' => [],
+                                                   'changed' => 0,
+                                                   'opcount' => 0,
+                                                   'prods' => [
+                                                                bless( {
+                                                                         'number' => 0,
+                                                                         'strcount' => 0,
+                                                                         'dircount' => 0,
+                                                                         'uncommit' => undef,
+                                                                         'error' => undef,
+                                                                         'patcount' => 0,
+                                                                         'actcount' => 1,
+                                                                         'items' => [
+                                                                                      bless( {
+                                                                                               'hashname' => '__ACTION1__',
+                                                                                               'lookahead' => 0,
+                                                                                               'line' => 71,
+                                                                                               'code' => '{Cindy::Sheet::collect_errors($thisparser);}'
+                                                                                             }, 'Parse::RecDescent::Action' )
+                                                                                    ],
+                                                                         'line' => undef
+                                                                       }, 'Parse::RecDescent::Production' )
+                                                              ],
+                                                   'name' => 'errout',
+                                                   'vars' => '',
+                                                   'line' => 70
+                                                 }, 'Parse::RecDescent::Rule' ),
                               'comment' => bless( {
                                                     'impcount' => 0,
                                                     'calls' => [],
@@ -5169,7 +5256,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                     'opcount' => 0,
                                                     'prods' => [
                                                                  bless( {
-                                                                          'number' => '0',
+                                                                          'number' => 0,
                                                                           'strcount' => 0,
                                                                           'dircount' => 2,
                                                                           'uncommit' => undef,
@@ -5223,13 +5310,13 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                       'impcount' => 0,
                                                       'calls' => [
                                                                    'comment',
-                                                                   'warn'
+                                                                   'errout'
                                                                  ],
                                                       'changed' => 0,
                                                       'opcount' => 0,
                                                       'prods' => [
                                                                    bless( {
-                                                                            'number' => '0',
+                                                                            'number' => 0,
                                                                             'strcount' => 0,
                                                                             'dircount' => 0,
                                                                             'uncommit' => undef,
@@ -5252,7 +5339,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                             'line' => undef
                                                                           }, 'Parse::RecDescent::Production' ),
                                                                    bless( {
-                                                                            'number' => '1',
+                                                                            'number' => 1,
                                                                             'strcount' => 1,
                                                                             'dircount' => 0,
                                                                             'uncommit' => undef,
@@ -5271,7 +5358,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                             'line' => undef
                                                                           }, 'Parse::RecDescent::Production' ),
                                                                    bless( {
-                                                                            'number' => '2',
+                                                                            'number' => 2,
                                                                             'strcount' => 0,
                                                                             'dircount' => 0,
                                                                             'uncommit' => undef,
@@ -5293,7 +5380,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                             'line' => undef
                                                                           }, 'Parse::RecDescent::Production' ),
                                                                    bless( {
-                                                                            'number' => '3',
+                                                                            'number' => 3,
                                                                             'strcount' => 0,
                                                                             'dircount' => 1,
                                                                             'uncommit' => undef,
@@ -5312,7 +5399,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                             'line' => undef
                                                                           }, 'Parse::RecDescent::Production' ),
                                                                    bless( {
-                                                                            'number' => '4',
+                                                                            'number' => 4,
                                                                             'strcount' => 0,
                                                                             'dircount' => 0,
                                                                             'uncommit' => undef,
@@ -5331,7 +5418,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                                                   'ldelim' => '/'
                                                                                                 }, 'Parse::RecDescent::Token' ),
                                                                                          bless( {
-                                                                                                  'subrule' => 'warn',
+                                                                                                  'subrule' => 'errout',
                                                                                                   'matchrule' => 0,
                                                                                                   'implicit' => undef,
                                                                                                   'argcode' => undef,
@@ -5355,7 +5442,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                           'opcount' => 0,
                                                           'prods' => [
                                                                        bless( {
-                                                                                'number' => '0',
+                                                                                'number' => 0,
                                                                                 'strcount' => 1,
                                                                                 'dircount' => 2,
                                                                                 'uncommit' => undef,
@@ -5387,7 +5474,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                                 'line' => undef
                                                                               }, 'Parse::RecDescent::Production' ),
                                                                        bless( {
-                                                                                'number' => '1',
+                                                                                'number' => 1,
                                                                                 'strcount' => 0,
                                                                                 'dircount' => 0,
                                                                                 'uncommit' => undef,
@@ -5418,7 +5505,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                    'opcount' => 0,
                                                    'prods' => [
                                                                 bless( {
-                                                                         'number' => '0',
+                                                                         'number' => 0,
                                                                          'strcount' => 0,
                                                                          'dircount' => 0,
                                                                          'uncommit' => undef,
@@ -5451,7 +5538,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                    'opcount' => 0,
                                                    'prods' => [
                                                                 bless( {
-                                                                         'number' => '0',
+                                                                         'number' => 0,
                                                                          'strcount' => 0,
                                                                          'dircount' => 0,
                                                                          'uncommit' => undef,
@@ -5486,7 +5573,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                       'opcount' => 0,
                                                       'prods' => [
                                                                    bless( {
-                                                                            'number' => '0',
+                                                                            'number' => 0,
                                                                             'strcount' => 1,
                                                                             'dircount' => 0,
                                                                             'uncommit' => undef,

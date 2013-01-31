@@ -1,4 +1,4 @@
-# $Id: Injection.pm 103 2011-04-17 19:51:07Z jo $
+# $Id: Injection.pm 119 2013-01-27 15:07:06Z jo $
 # Cindy::Injection - Injections are the elements of content injection 
 # sheets.
 #
@@ -106,25 +106,20 @@ sub find_matches($$) {
   my $found = $data;
   # . matches happen very often and are quite expensive
   if ($xpath ne '.') {
-    $found = eval {
-      my $xpc = Cindy::XPathContext->new($data);
-      $xpc->find( $xpath );
-    };
+    my $xpc = Cindy::XPathContext->new($data);
+    $found = $xpc->find( $xpath );
   }
   $prof->after($cp, $xpath);
-  if ($@) {
-    ERROR "Error searching $xpath:$@";
+  if ($found->isa('XML::LibXML::NodeList')) {
+    @data_nodes = $found->get_nodelist();
+    DEBUG "Found "
+            # toString is not called automagically
+            .join('|', map {$_->toString();} @data_nodes).'.';
   } else {
-    if ($found->isa('XML::LibXML::NodeList')) {
-      @data_nodes = $found->get_nodelist();
-      DEBUG "Found "
-              # toString is not called automagically
-              .join('|', map {$_->toString();} @data_nodes).'.';
-    } else {
-      DEBUG "Matched '$xpath', found $found.";
-      @data_nodes = ($found);
-    }
+    DEBUG "Matched '$xpath', found $found.";
+    @data_nodes = ($found);
   }
+
 
   return @data_nodes;
 }

@@ -69,3 +69,5 @@ Revision history for Perl extension Cindy.
 0.18
   - Added copy action
 
+0.19
+  - Improved error handling
