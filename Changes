@@ -71,3 +71,8 @@ Revision history for Perl extension Cindy.
 
 0.19
   - Improved error handling
+
+0.20
+  - target document doctypes are preserved
+  - tests ignore whitespace to avoid false positives
+ 

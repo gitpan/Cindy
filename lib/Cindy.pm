@@ -1,4 +1,4 @@
-# $Id: Cindy.pm 120 2013-01-31 11:34:41Z jo $
+# $Id: Cindy.pm 126 2014-09-23 18:52:22Z jo $
 # Cindy - Content INjection 
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -13,7 +13,7 @@ use warnings;
 
 use base qw(Exporter);
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 our @EXPORT= qw(get_html_doc get_xml_doc 
                 parse_html_string parse_xml_string 
@@ -59,7 +59,9 @@ sub parse_html_string($;$)
 {
   my ($string, $ropt)  = @_;
   $ropt ||= {};
-  my $html_parse_noimplied = $ropt->{html_parse_noimplied};
+  
+  my $html_parse_noimplied = $ropt->{html_parse_noimplied}
+                             || $ropt->{no_implied};
 
   my $dont_omit =  !$html_parse_noimplied 
                ||  ($string =~ /<html|<body/i);
@@ -127,6 +129,19 @@ sub inject($$$)
   # Connect the copied docroot with the output document.
   # This has to be done before the tree is matched.
   my $out = XML::LibXML::Document->new($doc->getVersion, $doc->getEncoding);
+  # Copy doctypes
+  # This worked for 2.0001/2.8.0 (wheezy),
+  # but does look somewhat clumsy. 
+  if ($doc->externalSubset) {
+    my $ext = $doc->externalSubset->cloneNode();
+    $ext->setOwnerDocument($out);
+    $out->setExternalSubset($ext);
+  }
+  if ($doc->internalSubset) {
+    my $int = $doc->internalSubset->cloneNode();
+    $int->setOwnerDocument($out);
+    $out->setInternalSubset($int);
+  }
   $out->setDocumentElement($docroot);
  
   # Run the sheet 

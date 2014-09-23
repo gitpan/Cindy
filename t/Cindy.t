@@ -12,6 +12,21 @@ BEGIN { use_ok('Cindy') };
 
 use Cindy;
 
+sub strip_ws($) {
+  my ($str) = @_;
+  # Remove all whitespace
+  $str =~ s/\s+//gm;
+  return $str;
+}
+
+sub is_up_to_ws
+{
+  my $got = strip_ws(shift(@_));
+  my $exp = strip_ws(shift(@_));
+  my $name = shift(@_);
+  is($got, $exp, $name);
+}
+
 sub test($$$) {
   my ($doc, $data, $cis) = @_;
   my $xdoc; 
@@ -99,7 +114,8 @@ my $data = q|<?xml version="1.0" encoding="utf-8" ?>
 </data>
 |;
 
-my $doc = q|<html xmlns="http://www.w3.org/1999/xhtml">
+my $doc = q|<!DOCTYPE html>
+<html>
 <head>
   <title>This is an Error</title>
   <script />
@@ -133,7 +149,8 @@ This is <font>Big and Red</font></p>
 </html>
 |;
 
-my $expected =  q|<html xmlns="http://www.w3.org/1999/xhtml">
+my $expected =  q|<!DOCTYPE html>
+<html>
 <head>
 <title>This is the Cindy Test Page</title>
 <script language="javascript">if (2 < 1) alert("Impossible");</script>
@@ -173,7 +190,7 @@ This is <font size="+2" color="red">Big and Red</font></p>
 </html>
 |;
 
-is (test($doc, $data, $cis), $expected, 'Basic');
+is_up_to_ws(test($doc, $data, $cis), $expected, 'Basic');
 
 #########################
 # Basic with css selectors
@@ -211,7 +228,7 @@ SKIP: {
   skip "HTML::Selector::XPath is not installed.",
        1 unless eval {require HTML::Selector::XPath;} ;
 
-  is(test($doc, $data, $cis), $expected, 'CSS');
+  is_up_to_ws(test($doc, $data, $cis), $expected, 'CSS');
 }
 
 #########################
@@ -243,8 +260,8 @@ $data = q|<?xml version="1.0" encoding="UTF-8"?>
 </data>
 |;
 
-$doc = q|<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+# DOCTYPE is added by libxml
+$doc = q|<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>Tests for cindy order of execution</title>
 </head>
@@ -266,7 +283,8 @@ which means a change done before is matched.</span></li>
 </html>
 |;
 
-$expected = q|<html xmlns="http://www.w3.org/1999/xhtml">
+$expected = q|<!DOCTYPE html PUBLIC "-//W3C//DTDHTML4.0Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head><title>Tests for cindy order of execution</title></head>
 <body>
 
@@ -284,7 +302,7 @@ $expected = q|<html xmlns="http://www.w3.org/1999/xhtml">
 </html>
 |;
 
-is (test($doc, $data, $cis), $expected, 'Order');
+is_up_to_ws(test($doc, $data, $cis), $expected, 'Order');
 
 #########################
 # Repeat condition
@@ -334,7 +352,8 @@ $doc = q|<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://
 </html>
 |;
 
-$expected = q|<html xmlns="http://www.w3.org/1999/xhtml">
+$expected = q|<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head><title>Tests the cindy repeat condition</title></head>
 <body>
 
@@ -356,7 +375,7 @@ $expected = q|<html xmlns="http://www.w3.org/1999/xhtml">
 </html>
 |;
 
-is (test($doc, $data, $cis), $expected, 'Repeat condition');
+is_up_to_ws(test($doc, $data, $cis), $expected, 'Repeat condition');
 
 #########################
 # No data found
@@ -408,5 +427,5 @@ $expected = q|<?xml version="1.0" encoding="UTF-8"?>
 </doc>
 |;
 
-is (test($doc, $data, $cis), $expected, 'No data found');
+is_up_to_ws(test($doc, $data, $cis), $expected, 'No data found');
 

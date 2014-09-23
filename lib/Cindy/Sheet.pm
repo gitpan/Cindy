@@ -1,4 +1,4 @@
-# $Id: Sheet.pm 120 2013-01-31 11:34:41Z jo $
+# $Id: Sheet.pm 125 2014-09-23 06:02:55Z jo $
 # Cindy::Sheet - Parsing Content Injection Sheets
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -30,7 +30,7 @@ sub die_on_errors
   my ($errors) = @_;
   if ($errors and scalar(@{$errors})) {
     DEBUG "CJS: Dying on errors.";
-    die join("\n", map("line $_->[1]: $_->[0]", @{$errors}))."\n";
+    die join("\n", map {"line $_->[1]: $_->[0]"} @{$errors})."\n";
   }
   return 0; 
 }
@@ -40,7 +40,7 @@ sub collect_errors
   my ($parser) = @_;
   my $errors = $parser->{errors};
   DEBUG "CJS: Appending errors:"
-      . join("\n", map("line $_->[1]: $_->[0]", @{$errors}));
+      . join("\n", map {"line $_->[1]: $_->[0]"} @{$errors});
   push(@{$parser->{__error_collector}}, @{$errors});
   return 0; 
 }

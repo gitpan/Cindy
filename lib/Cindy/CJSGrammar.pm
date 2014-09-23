@@ -4406,7 +4406,6 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                         'injection',
                                                                         'separator'
                                                                       ],
-                                                           'changed' => 0,
                                                            'opcount' => 0,
                                                            'prods' => [
                                                                         bless( {
@@ -4446,12 +4445,12 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                       ],
                                                            'name' => 'full_injection',
                                                            'vars' => '',
+                                                           'changed' => 0,
                                                            'line' => 56
                                                          }, 'Parse::RecDescent::Rule' ),
                               'atname' => bless( {
                                                    'impcount' => 0,
                                                    'calls' => [],
-                                                   'changed' => 0,
                                                    'opcount' => 0,
                                                    'prods' => [
                                                                 bless( {
@@ -4464,14 +4463,14 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                          'actcount' => 0,
                                                                          'items' => [
                                                                                       bless( {
+                                                                                               'description' => '/\\\\w[\\\\w\\\\d.:-]*/',
+                                                                                               'rdelim' => '/',
                                                                                                'pattern' => '\\w[\\w\\d.:-]*',
                                                                                                'hashname' => '__PATTERN1__',
-                                                                                               'description' => '/\\\\w[\\\\w\\\\d.:-]*/',
                                                                                                'lookahead' => 0,
-                                                                                               'rdelim' => '/',
-                                                                                               'line' => 14,
+                                                                                               'ldelim' => '/',
                                                                                                'mod' => '',
-                                                                                               'ldelim' => '/'
+                                                                                               'line' => 14
                                                                                              }, 'Parse::RecDescent::Token' )
                                                                                     ],
                                                                          'line' => undef
@@ -4479,6 +4478,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                               ],
                                                    'name' => 'atname',
                                                    'vars' => '',
+                                                   'changed' => 0,
                                                    'line' => 14
                                                  }, 'Parse::RecDescent::Rule' ),
                               'injection_list' => bless( {
@@ -4486,7 +4486,6 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                            'calls' => [
                                                                         'full_injection'
                                                                       ],
-                                                           'changed' => 0,
                                                            'opcount' => 0,
                                                            'prods' => [
                                                                         bless( {
@@ -4521,6 +4520,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                       ],
                                                            'name' => 'injection_list',
                                                            'vars' => '',
+                                                           'changed' => 0,
                                                            'line' => 65
                                                          }, 'Parse::RecDescent::Rule' ),
                               'sub_injection_list' => bless( {
@@ -4528,7 +4528,6 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                'calls' => [
                                                                             'sub_injection'
                                                                           ],
-                                                               'changed' => 0,
                                                                'opcount' => 0,
                                                                'prods' => [
                                                                             bless( {
@@ -4563,12 +4562,12 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                           ],
                                                                'name' => 'sub_injection_list',
                                                                'vars' => '',
+                                                               'changed' => 0,
                                                                'line' => 62
                                                              }, 'Parse::RecDescent::Rule' ),
                               'attribute' => bless( {
                                                       'impcount' => 0,
                                                       'calls' => [],
-                                                      'changed' => 0,
                                                       'opcount' => 0,
                                                       'prods' => [
                                                                    bless( {
@@ -4581,14 +4580,14 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                             'actcount' => 0,
                                                                             'items' => [
                                                                                          bless( {
+                                                                                                  'description' => '/attribute/',
+                                                                                                  'rdelim' => '/',
                                                                                                   'pattern' => 'attribute',
                                                                                                   'hashname' => '__PATTERN1__',
-                                                                                                  'description' => '/attribute/',
                                                                                                   'lookahead' => 0,
-                                                                                                  'rdelim' => '/',
-                                                                                                  'line' => 17,
+                                                                                                  'ldelim' => '/',
                                                                                                   'mod' => '',
-                                                                                                  'ldelim' => '/'
+                                                                                                  'line' => 17
                                                                                                 }, 'Parse::RecDescent::Token' )
                                                                                        ],
                                                                             'line' => undef
@@ -4596,6 +4595,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                  ],
                                                       'name' => 'attribute',
                                                       'vars' => '',
+                                                      'changed' => 0,
                                                       'line' => 17
                                                     }, 'Parse::RecDescent::Rule' ),
                               'injection' => bless( {
@@ -4610,7 +4610,6 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                    'sublist',
                                                                    'errout'
                                                                  ],
-                                                      'changed' => 0,
                                                       'opcount' => 0,
                                                       'prods' => [
                                                                    bless( {
@@ -4623,14 +4622,14 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                             'actcount' => 1,
                                                                             'items' => [
                                                                                          bless( {
+                                                                                                  'description' => '/\\\\s*;/',
+                                                                                                  'rdelim' => '/',
                                                                                                   'pattern' => '\\s*;',
                                                                                                   'hashname' => '__PATTERN1__',
-                                                                                                  'description' => '/\\\\s*;/',
                                                                                                   'lookahead' => 1,
-                                                                                                  'rdelim' => '/',
-                                                                                                  'line' => 25,
+                                                                                                  'ldelim' => '/',
                                                                                                   'mod' => '',
-                                                                                                  'ldelim' => '/'
+                                                                                                  'line' => 25
                                                                                                 }, 'Parse::RecDescent::Token' ),
                                                                                          bless( {
                                                                                                   'hashname' => '__ACTION1__',
@@ -4847,14 +4846,14 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                             'actcount' => 0,
                                                                             'items' => [
                                                                                          bless( {
+                                                                                                  'description' => '/[^;]+;[^\\\\n]*\\\\n?/',
+                                                                                                  'rdelim' => '/',
                                                                                                   'pattern' => '[^;]+;[^\\n]*\\n?',
                                                                                                   'hashname' => '__PATTERN1__',
-                                                                                                  'description' => '/[^;]+;[^\\\\n]*\\\\n?/',
                                                                                                   'lookahead' => 0,
-                                                                                                  'rdelim' => '/',
-                                                                                                  'line' => 38,
+                                                                                                  'ldelim' => '/',
                                                                                                   'mod' => '',
-                                                                                                  'ldelim' => '/'
+                                                                                                  'line' => 38
                                                                                                 }, 'Parse::RecDescent::Token' ),
                                                                                          bless( {
                                                                                                   'subrule' => 'errout',
@@ -4870,6 +4869,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                  ],
                                                       'name' => 'injection',
                                                       'vars' => '',
+                                                      'changed' => 0,
                                                       'line' => 24
                                                     }, 'Parse::RecDescent::Rule' ),
                               'complete_injection_list' => bless( {
@@ -4879,7 +4879,6 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                                  'injection_list',
                                                                                  'errout'
                                                                                ],
-                                                                    'changed' => 0,
                                                                     'opcount' => 0,
                                                                     'prods' => [
                                                                                  bless( {
@@ -4908,14 +4907,14 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                                                                 'line' => 67
                                                                                                               }, 'Parse::RecDescent::Subrule' ),
                                                                                                        bless( {
+                                                                                                                'description' => '/\\\\Z/',
+                                                                                                                'rdelim' => '/',
                                                                                                                 'pattern' => '\\Z',
                                                                                                                 'hashname' => '__PATTERN1__',
-                                                                                                                'description' => '/\\\\Z/',
                                                                                                                 'lookahead' => 0,
-                                                                                                                'rdelim' => '/',
-                                                                                                                'line' => 67,
+                                                                                                                'ldelim' => '/',
                                                                                                                 'mod' => '',
-                                                                                                                'ldelim' => '/'
+                                                                                                                'line' => 67
                                                                                                               }, 'Parse::RecDescent::Token' ),
                                                                                                        bless( {
                                                                                                                 'hashname' => '__ACTION1__',
@@ -4968,6 +4967,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                                ],
                                                                     'name' => 'complete_injection_list',
                                                                     'vars' => '',
+                                                                    'changed' => 0,
                                                                     'line' => 67
                                                                   }, 'Parse::RecDescent::Rule' ),
                               'usage' => bless( {
@@ -4977,7 +4977,6 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                'selector',
                                                                'separator'
                                                              ],
-                                                  'changed' => 0,
                                                   'opcount' => 0,
                                                   'prods' => [
                                                                bless( {
@@ -5064,12 +5063,12 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                              ],
                                                   'name' => 'usage',
                                                   'vars' => '',
+                                                  'changed' => 0,
                                                   'line' => 49
                                                 }, 'Parse::RecDescent::Rule' ),
                               'selector' => bless( {
                                                      'impcount' => 0,
                                                      'calls' => [],
-                                                     'changed' => 0,
                                                      'opcount' => 0,
                                                      'prods' => [
                                                                   bless( {
@@ -5082,14 +5081,14 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                            'actcount' => 0,
                                                                            'items' => [
                                                                                         bless( {
+                                                                                                 'description' => '/css|xpath/',
+                                                                                                 'rdelim' => '/',
                                                                                                  'pattern' => 'css|xpath',
                                                                                                  'hashname' => '__PATTERN1__',
-                                                                                                 'description' => '/css|xpath/',
                                                                                                  'lookahead' => 0,
-                                                                                                 'rdelim' => '/',
-                                                                                                 'line' => 19,
+                                                                                                 'ldelim' => '/',
                                                                                                  'mod' => '',
-                                                                                                 'ldelim' => '/'
+                                                                                                 'line' => 19
                                                                                                }, 'Parse::RecDescent::Token' )
                                                                                       ],
                                                                            'line' => undef
@@ -5097,6 +5096,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                 ],
                                                      'name' => 'selector',
                                                      'vars' => '',
+                                                     'changed' => 0,
                                                      'line' => 19
                                                    }, 'Parse::RecDescent::Rule' ),
                               'sublist' => bless( {
@@ -5104,7 +5104,6 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                     'calls' => [
                                                                  'sub_injection_list'
                                                                ],
-                                                    'changed' => 0,
                                                     'opcount' => 0,
                                                     'prods' => [
                                                                  bless( {
@@ -5157,12 +5156,12 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                ],
                                                     'name' => 'sublist',
                                                     'vars' => '',
+                                                    'changed' => 0,
                                                     'line' => 63
                                                   }, 'Parse::RecDescent::Rule' ),
                               'xpath' => bless( {
                                                   'impcount' => 0,
                                                   'calls' => [],
-                                                  'changed' => 0,
                                                   'opcount' => 0,
                                                   'prods' => [
                                                                bless( {
@@ -5175,14 +5174,14 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                         'actcount' => 1,
                                                                         'items' => [
                                                                                      bless( {
+                                                                                              'description' => '/\\\\"[^\\\\"]+\\\\"/',
+                                                                                              'rdelim' => '/',
                                                                                               'pattern' => '\\"[^\\"]+\\"',
                                                                                               'hashname' => '__PATTERN1__',
-                                                                                              'description' => '/\\\\"[^\\\\"]+\\\\"/',
                                                                                               'lookahead' => 0,
-                                                                                              'rdelim' => '/',
-                                                                                              'line' => 11,
+                                                                                              'ldelim' => '/',
                                                                                               'mod' => '',
-                                                                                              'ldelim' => '/'
+                                                                                              'line' => 11
                                                                                             }, 'Parse::RecDescent::Token' ),
                                                                                      bless( {
                                                                                               'hashname' => '__ACTION1__',
@@ -5203,14 +5202,14 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                         'actcount' => 0,
                                                                         'items' => [
                                                                                      bless( {
+                                                                                              'description' => '/\\\\S+/',
+                                                                                              'rdelim' => '/',
                                                                                               'pattern' => '\\S+',
                                                                                               'hashname' => '__PATTERN1__',
-                                                                                              'description' => '/\\\\S+/',
                                                                                               'lookahead' => 0,
-                                                                                              'rdelim' => '/',
-                                                                                              'line' => 13,
+                                                                                              'ldelim' => '/',
                                                                                               'mod' => '',
-                                                                                              'ldelim' => '/'
+                                                                                              'line' => 13
                                                                                             }, 'Parse::RecDescent::Token' )
                                                                                    ],
                                                                         'line' => undef
@@ -5218,12 +5217,12 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                              ],
                                                   'name' => 'xpath',
                                                   'vars' => '',
+                                                  'changed' => 0,
                                                   'line' => 11
                                                 }, 'Parse::RecDescent::Rule' ),
                               'errout' => bless( {
                                                    'impcount' => 0,
                                                    'calls' => [],
-                                                   'changed' => 0,
                                                    'opcount' => 0,
                                                    'prods' => [
                                                                 bless( {
@@ -5247,12 +5246,12 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                               ],
                                                    'name' => 'errout',
                                                    'vars' => '',
+                                                   'changed' => 0,
                                                    'line' => 70
                                                  }, 'Parse::RecDescent::Rule' ),
                               'comment' => bless( {
                                                     'impcount' => 0,
                                                     'calls' => [],
-                                                    'changed' => 0,
                                                     'opcount' => 0,
                                                     'prods' => [
                                                                  bless( {
@@ -5265,14 +5264,14 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                           'actcount' => 0,
                                                                           'items' => [
                                                                                        bless( {
+                                                                                                'description' => '/;/',
+                                                                                                'rdelim' => '/',
                                                                                                 'pattern' => ';',
                                                                                                 'hashname' => '__PATTERN1__',
-                                                                                                'description' => '/;/',
                                                                                                 'lookahead' => 0,
-                                                                                                'rdelim' => '/',
-                                                                                                'line' => 42,
+                                                                                                'ldelim' => '/',
                                                                                                 'mod' => '',
-                                                                                                'ldelim' => '/'
+                                                                                                'line' => 42
                                                                                               }, 'Parse::RecDescent::Token' ),
                                                                                        bless( {
                                                                                                 'hashname' => '__DIRECTIVE1__',
@@ -5289,14 +5288,14 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                                                 'code' => 'my $oldskip = $skip; $skip= qr/[^\\n]*/; $oldskip'
                                                                                               }, 'Parse::RecDescent::Directive' ),
                                                                                        bless( {
+                                                                                                'description' => '/\\\\n?/',
+                                                                                                'rdelim' => '/',
                                                                                                 'pattern' => '\\n?',
                                                                                                 'hashname' => '__PATTERN2__',
-                                                                                                'description' => '/\\\\n?/',
                                                                                                 'lookahead' => 0,
-                                                                                                'rdelim' => '/',
-                                                                                                'line' => 42,
+                                                                                                'ldelim' => '/',
                                                                                                 'mod' => '',
-                                                                                                'ldelim' => '/'
+                                                                                                'line' => 42
                                                                                               }, 'Parse::RecDescent::Token' )
                                                                                      ],
                                                                           'line' => undef
@@ -5304,6 +5303,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                ],
                                                     'name' => 'comment',
                                                     'vars' => '',
+                                                    'changed' => 0,
                                                     'line' => 41
                                                   }, 'Parse::RecDescent::Rule' ),
                               'separator' => bless( {
@@ -5312,7 +5312,6 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                    'comment',
                                                                    'errout'
                                                                  ],
-                                                      'changed' => 0,
                                                       'opcount' => 0,
                                                       'prods' => [
                                                                    bless( {
@@ -5367,14 +5366,14 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                             'actcount' => 0,
                                                                             'items' => [
                                                                                          bless( {
+                                                                                                  'description' => '/\\\\Z/',
+                                                                                                  'rdelim' => '/',
                                                                                                   'pattern' => '\\Z',
                                                                                                   'hashname' => '__PATTERN1__',
-                                                                                                  'description' => '/\\\\Z/',
                                                                                                   'lookahead' => 1,
-                                                                                                  'rdelim' => '/',
-                                                                                                  'line' => 45,
+                                                                                                  'ldelim' => '/',
                                                                                                   'mod' => '',
-                                                                                                  'ldelim' => '/'
+                                                                                                  'line' => 45
                                                                                                 }, 'Parse::RecDescent::Token' )
                                                                                        ],
                                                                             'line' => undef
@@ -5408,14 +5407,14 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                             'actcount' => 0,
                                                                             'items' => [
                                                                                          bless( {
+                                                                                                  'description' => '/[^;]+;[^\\\\n]*\\\\n?/',
+                                                                                                  'rdelim' => '/',
                                                                                                   'pattern' => '[^;]+;[^\\n]*\\n?',
                                                                                                   'hashname' => '__PATTERN1__',
-                                                                                                  'description' => '/[^;]+;[^\\\\n]*\\\\n?/',
                                                                                                   'lookahead' => 0,
-                                                                                                  'rdelim' => '/',
-                                                                                                  'line' => 47,
+                                                                                                  'ldelim' => '/',
                                                                                                   'mod' => '',
-                                                                                                  'ldelim' => '/'
+                                                                                                  'line' => 47
                                                                                                 }, 'Parse::RecDescent::Token' ),
                                                                                          bless( {
                                                                                                   'subrule' => 'errout',
@@ -5431,6 +5430,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                  ],
                                                       'name' => 'separator',
                                                       'vars' => '',
+                                                      'changed' => 0,
                                                       'line' => 43
                                                     }, 'Parse::RecDescent::Rule' ),
                               'sub_injection' => bless( {
@@ -5438,7 +5438,6 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                           'calls' => [
                                                                        'full_injection'
                                                                      ],
-                                                          'changed' => 0,
                                                           'opcount' => 0,
                                                           'prods' => [
                                                                        bless( {
@@ -5496,12 +5495,12 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                      ],
                                                           'name' => 'sub_injection',
                                                           'vars' => '',
+                                                          'changed' => 0,
                                                           'line' => 59
                                                         }, 'Parse::RecDescent::Rule' ),
                               'action' => bless( {
                                                    'impcount' => 0,
                                                    'calls' => [],
-                                                   'changed' => 0,
                                                    'opcount' => 0,
                                                    'prods' => [
                                                                 bless( {
@@ -5514,14 +5513,14 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                          'actcount' => 0,
                                                                          'items' => [
                                                                                       bless( {
+                                                                                               'description' => '/content|replace|copy|omit-tag|condition|comment/',
+                                                                                               'rdelim' => '/',
                                                                                                'pattern' => 'content|replace|copy|omit-tag|condition|comment',
                                                                                                'hashname' => '__PATTERN1__',
-                                                                                               'description' => '/content|replace|copy|omit-tag|condition|comment/',
                                                                                                'lookahead' => 0,
-                                                                                               'rdelim' => '/',
-                                                                                               'line' => 16,
+                                                                                               'ldelim' => '/',
                                                                                                'mod' => '',
-                                                                                               'ldelim' => '/'
+                                                                                               'line' => 16
                                                                                              }, 'Parse::RecDescent::Token' )
                                                                                     ],
                                                                          'line' => undef
@@ -5529,12 +5528,12 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                               ],
                                                    'name' => 'action',
                                                    'vars' => '',
+                                                   'changed' => 0,
                                                    'line' => 16
                                                  }, 'Parse::RecDescent::Rule' ),
                               'repeat' => bless( {
                                                    'impcount' => 0,
                                                    'calls' => [],
-                                                   'changed' => 0,
                                                    'opcount' => 0,
                                                    'prods' => [
                                                                 bless( {
@@ -5547,14 +5546,14 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                          'actcount' => 0,
                                                                          'items' => [
                                                                                       bless( {
+                                                                                               'description' => '/repeat/',
+                                                                                               'rdelim' => '/',
                                                                                                'pattern' => 'repeat',
                                                                                                'hashname' => '__PATTERN1__',
-                                                                                               'description' => '/repeat/',
                                                                                                'lookahead' => 0,
-                                                                                               'rdelim' => '/',
-                                                                                               'line' => 18,
+                                                                                               'ldelim' => '/',
                                                                                                'mod' => '',
-                                                                                               'ldelim' => '/'
+                                                                                               'line' => 18
                                                                                              }, 'Parse::RecDescent::Token' )
                                                                                     ],
                                                                          'line' => undef
@@ -5562,6 +5561,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                               ],
                                                    'name' => 'repeat',
                                                    'vars' => '',
+                                                   'changed' => 0,
                                                    'line' => 18
                                                  }, 'Parse::RecDescent::Rule' ),
                               'condition' => bless( {
@@ -5569,7 +5569,6 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                       'calls' => [
                                                                    'xpath'
                                                                  ],
-                                                      'changed' => 0,
                                                       'opcount' => 0,
                                                       'prods' => [
                                                                    bless( {
@@ -5608,6 +5607,7 @@ package Cindy::CJSGrammar; sub new { my $self = bless( {
                                                                  ],
                                                       'name' => 'condition',
                                                       'vars' => '',
+                                                      'changed' => 0,
                                                       'line' => 21
                                                     }, 'Parse::RecDescent::Rule' )
                             },
