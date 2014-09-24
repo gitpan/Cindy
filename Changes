@@ -78,4 +78,7 @@ Revision history for Perl extension Cindy.
 
 0.21
   - Fixed copying of dtd nodes
+
+0.22
+  - Fixed stupid bug affecting Cindy::Apache2
  

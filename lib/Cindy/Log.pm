@@ -1,4 +1,4 @@
-# $Id: Log.pm 128 2014-09-24 04:46:46Z jo $
+# $Id: Log.pm 129 2014-09-24 12:07:07Z jo $
 # Cindy::Log - Logging for Cindy
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -23,7 +23,7 @@ our @EXPORT= qw(DEBUG INFO WARN ERROR FATAL);
 BEGIN {
   # Detect mod_perl2 by checking for what we need.
   eval (q|
-    use use Apache2::RequestUtil;
+    use Apache2::RequestUtil;
     1;
   |)
   and eval (q|
