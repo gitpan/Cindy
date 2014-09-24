@@ -1,4 +1,4 @@
-# $Id: Cindy.pm 126 2014-09-23 18:52:22Z jo $
+# $Id: Cindy.pm 128 2014-09-24 04:46:46Z jo $
 # Cindy - Content INjection 
 #
 # Copyright (c) 2008 Joachim Zobel <jz-2008@heute-morgen.de>. All rights reserved.
@@ -13,7 +13,7 @@ use warnings;
 
 use base qw(Exporter);
 
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 
 our @EXPORT= qw(get_html_doc get_xml_doc 
                 parse_html_string parse_xml_string 
@@ -133,14 +133,16 @@ sub inject($$$)
   # This worked for 2.0001/2.8.0 (wheezy),
   # but does look somewhat clumsy. 
   if ($doc->externalSubset) {
-    my $ext = $doc->externalSubset->cloneNode();
-    $ext->setOwnerDocument($out);
-    $out->setExternalSubset($ext);
+    my $ext = $doc->externalSubset;
+    $out->createExternalSubset($ext->getName(),
+                               $ext->publicId(),
+                               $ext->systemId());
   }
   if ($doc->internalSubset) {
-    my $int = $doc->internalSubset->cloneNode();
-    $int->setOwnerDocument($out);
-    $out->setInternalSubset($int);
+    my $int = $doc->internalSubset;
+    $out->createInternalSubset($int->getName(),
+                               $int->publicId(),
+                               $int->systemId());
   }
   $out->setDocumentElement($docroot);
  

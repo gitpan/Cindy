@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Cindy
-version:            0.20
+version:            0.21
 abstract:           use unmodified XML or HTML documents as templates.
 author:
     - JZOBEL (jz-2009@heute-morgen.de)
